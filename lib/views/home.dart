@@ -311,7 +311,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          Text("xxxx"),
+                          Text("FORMULARIO"),
                           const SizedBox(height: 40),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
