@@ -63,13 +63,16 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       try {
+        String fecha =
+            "${DateTime.now().year.toString().padLeft(4, '0')}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
         final response =
             await dio.post("$link/control_accesos/api-token/", data: datas);
         if (response.statusCode == 200) {
           Map<String, dynamic>? decodedToken =
               JwtDecoder.decode(response.data['access']);
+
           var response2 = await dio.request(
-            '$link/tablas/punto_asociado/listarAPKUsuario/?user_id=${decodedToken?['user_id']}',
+            '$link/tablas/punto_asociado/listarAPKUsuario/?user_id=${decodedToken?['user_id']}&fecha_atencion=$fecha',
             options: Options(
               method: 'GET',
             ),

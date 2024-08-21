@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
 import 'package:microcash_cliente/views/login.dart';
+import 'package:microcash_cliente/views/pedidos.dart';
+import 'package:microcash_cliente/views/punto.dart';
+import 'package:microcash_cliente/views/tripulacion.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -24,11 +27,6 @@ class _MyHomePageState extends State<MyHomePage> {
   late Timer _timer;
   DateTime _currentDateTime = DateTime.now();
   List<bool> estadoO = [];
-  String _selectedService = '';
-
-  late final TextEditingController _controllercodigo = TextEditingController();
-  late final TextEditingController _controllerdni = TextEditingController();
-  late final TextEditingController _controllerunidad = TextEditingController();
 
   @override
   void initState() {
@@ -63,8 +61,8 @@ class _MyHomePageState extends State<MyHomePage> {
               onPressed: () {
                 setState(
                   () {
-                    _selectedService = select;
-                    estadoO[ind]=false;
+                    // _selectedService = select;
+                    estadoO[ind] = false;
                   },
                 );
                 Navigator.of(context).pop();
@@ -124,471 +122,148 @@ class _MyHomePageState extends State<MyHomePage> {
         width: MediaQuery.sizeOf(context).width,
         padding: const EdgeInsets.all(20),
         decoration: const BoxDecoration(color: Colors.white),
-        child: ListView.builder(
-          itemCount: widget.trabajador.length,
-          itemBuilder: (context, index) {
-            return widget.trabajador[index]['id_tipo_usuario'] != 1
-                ? PuntoCliente(widget.trabajador[index], index)
-                : SizedBox();
-          },
+        child: Column(
+          children: [
+            WidgetCabecera(context, widget.trabajador[0]),
+            Divider(),
+            Flexible(
+              child: ListView.builder(
+                itemCount: widget.trabajador.length,
+                itemBuilder: (context, index) {
+                  return widget.trabajador[index]['id_tipo_usuario'] != 1
+                      ? PuntoCliente(widget.trabajador[index])
+                      : SizedBox();
+                },
+              ),
+            )
+          ],
         ),
       ),
     );
   }
 
-  Widget PuntoCliente(dynamic arr, int index) {
-    print(arr);
+  Widget PuntoCliente(dynamic arr) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
+      padding: const EdgeInsets.only(bottom: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            children: [
-              Text(
-                "Cliente: ",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.bold),
+          GestureDetector(
+            child: Container(
+              height: MediaQuery.sizeOf(context).height * 0.07,
+              decoration: BoxDecoration(
+              color: Colors.grey.withOpacity(0.2),
+                borderRadius: const BorderRadius.all(Radius.circular(10.0)),
               ),
-              Text(arr['cliente_razon_social'] ?? ""),
-            ],
-          ),
-          Row(
-            children: [
-              Text(
-                "Punto: ",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.bold),
-              ),
-              Text(arr['cliente_direccion'] ?? arr['punto_razon_social']),
-            ],
-          ),
-          Row(
-            children: [
-              Text(
-                "Usuario: ",
-                style: TextStyle(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.bold),
-              ),
-              Text(arr['username'] ?? ""),
-            ],
-          ),
-          const SizedBox(height: 10),
-          _selectedService == ''
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedService = 'Verificar Tripulación';
-                          estadoO[index] = true;
-                        });
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Theme.of(context).colorScheme.tertiaryContainer),
-                        foregroundColor: MaterialStateProperty.all<Color>(
-                            Theme.of(context).colorScheme.onPrimaryFixed),
-                      ),
-                      child: const Text('Verificar Tripulación',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
+              padding: EdgeInsets.symmetric(horizontal: 25),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "Punto: ",
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(
+                    child: Text(
+                      arr['cliente_punto_razon_social'] ??
+                          arr['punto_razon_social'],
+                      maxLines: 2,
                     ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedService = 'Gestión Pedidos';
-                          estadoO[index] = true;
-                        });
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Theme.of(context).colorScheme.tertiaryContainer),
-                        foregroundColor: MaterialStateProperty.all<Color>(
-                            Theme.of(context).colorScheme.onPrimaryFixed),
-                      ),
-                      child: const Text('Gestión Pedidos',
-                          style: TextStyle(fontWeight: FontWeight.bold)),
-                    ),
-                  ],
-                )
-              : _selectedService == 'Gestión Pedidos'
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              _selectedService = 'En RUTA';
-                              estadoO[index] = true;
-                            });
-                          },
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Theme.of(context)
-                                    .colorScheme
-                                    .tertiaryContainer),
-                            foregroundColor: MaterialStateProperty.all<Color>(
-                                Theme.of(context).colorScheme.onPrimaryFixed),
-                          ),
-                          child: const Text('En RUTA',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-                        const SizedBox(width: 8),
-                        ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              _selectedService = 'En PROGRAMACION';
-                              estadoO[index] = true;
-                            });
-                          },
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(
-                                Theme.of(context)
-                                    .colorScheme
-                                    .tertiaryContainer),
-                            foregroundColor: MaterialStateProperty.all<Color>(
-                                Theme.of(context).colorScheme.onPrimaryFixed),
-                          ),
-                          child: const Text('En PROGRAMACION',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-                      ],
-                    )
-                  : estadoO[index]
-                      ? Container(
-                          alignment: Alignment.center,
-                          width: MediaQuery.sizeOf(context).width,
-                          padding: const EdgeInsets.all(16),
-                          color: Colors.grey[400],
-                          child: Text(
-                            _selectedService,
-                            textScaleFactor: 1,
-                            style: const TextStyle(
-                                fontSize: 13, fontWeight: FontWeight.bold),
-                          ),
-                        )
-                      : SizedBox(),
-          estadoO[index]
-              ? Column(
-                  children: [
-                    const SizedBox(height: 5),
-                    if (_selectedService.isNotEmpty)
-                      _selectedService == 'Verificar Tripulación'
-                          ? Column(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Divider(),
-                                    const SizedBox(height: 15),
-                                    TextFormField(
-                                      controller: _controllercodigo,
-                                      decoration: const InputDecoration(
-                                        labelText: 'CÓDIGO',
-                                        border: OutlineInputBorder(),
-                                      ),
-                                      onChanged: (value) {
-                                        // data['num_serial'] = value;
-                                      },
-                                      textInputAction: TextInputAction.next,
-                                    ),
-                                    const SizedBox(height: 15),
-                                    TextFormField(
-                                      controller: _controllerdni,
-                                      decoration: const InputDecoration(
-                                        labelText: 'DNI',
-                                        border: OutlineInputBorder(),
-                                      ),
-                                      onChanged: (value) {
-                                        // data['num_serial'] = value;
-                                      },
-                                      textInputAction: TextInputAction.next,
-                                    ),
-                                    // const SizedBox(height: 15),
-                                    // TextFormField(
-                                    //   controller: _controllerunidad,
-                                    //   decoration: const InputDecoration(
-                                    //     labelText: 'UNIDAD',
-                                    //     border: OutlineInputBorder(),
-                                    //   ),
-                                    //   onChanged: (value) {
-                                    //     // data['num_serial'] = value;
-                                    //   },
-                                    //   textInputAction: TextInputAction.next,
-                                    // ),
-                                    const SizedBox(height: 20),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceAround,
-                                      children: [
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              //Buscar
-                                            });
-                                          },
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all<
-                                                        Color>(
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .tertiaryContainer),
-                                            foregroundColor:
-                                                MaterialStateProperty.all<
-                                                        Color>(
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .onPrimaryFixed),
-                                          ),
-                                          child: Text("Consultar",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold)),
-                                        ),
-                                        ElevatedButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              _showExitConfirmationDialog('',index);
-                                            });
-                                          },
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all<
-                                                        Color>(
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .tertiaryContainer),
-                                            foregroundColor:
-                                                MaterialStateProperty.all<
-                                                        Color>(
-                                                    Theme.of(context)
-                                                        .colorScheme
-                                                        .onPrimaryFixed),
-                                          ),
-                                          child: const Text(
-                                            "Salir",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                )
-                              ],
-                            )
-                          : _selectedService == 'Gestión Pedidos'
-                              ? Container(
-                                  width: MediaQuery.sizeOf(context).width,
-                                  padding: const EdgeInsets.all(16),
-                                  child: Column(
-                                    children: [
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          setState(
-                                            () {
-                                              _selectedService = '';
-                                            },
-                                          );
-                                        },
-                                        child: const Text(
-                                          "Atras",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : _selectedService == 'En RUTA'
-                                  ? Container(
-                                      width: MediaQuery.sizeOf(context).width,
-                                      padding: const EdgeInsets.all(16),
-                                      child: Column(
-                                        children: [
-                                          WidgetDatos(context),
-                                          Divider(),
-                                          WidgetRuta(context),
-                                          const SizedBox(height: 20),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    //Buscar
-                                                  });
-                                                },
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all<
-                                                          Color>(Theme.of(
-                                                              context)
-                                                          .colorScheme
-                                                          .tertiaryContainer),
-                                                  foregroundColor:
-                                                      MaterialStateProperty.all<
-                                                              Color>(
-                                                          Theme.of(context)
-                                                              .colorScheme
-                                                              .onPrimaryFixed),
-                                                ),
-                                                child: Text(
-                                                  "Cambio Contacto",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ),
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    // _showExitConfirmationDialog('Gestión Pedidos');
-                                                    // _showExitConfirmationDialog('');
-                                                  });
-                                                },
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all<
-                                                          Color>(Theme.of(
-                                                              context)
-                                                          .colorScheme
-                                                          .tertiaryContainer),
-                                                  foregroundColor:
-                                                      MaterialStateProperty.all<
-                                                              Color>(
-                                                          Theme.of(context)
-                                                              .colorScheme
-                                                              .onPrimaryFixed),
-                                                ),
-                                                child: const Text(
-                                                  "Anular Pedido",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              setState(() {
-                                                _showExitConfirmationDialog(
-                                                    'Gestión Pedidos',index);
-                                                // _showExitConfirmationDialog('');
-                                              });
-                                            },
-                                            child: const Text(
-                                              "Atras",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : Container(
-                                      width: MediaQuery.sizeOf(context).width,
-                                      padding: const EdgeInsets.all(16),
-                                      child: Column(
-                                        children: [
-                                          WidgetDatos(context),
-                                          SizedBox(height: 5),
-                                          WidgetRuta2(context),
-                                          const SizedBox(height: 20),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceAround,
-                                            children: [
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    //Buscar
-                                                  });
-                                                },
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all<
-                                                          Color>(Theme.of(
-                                                              context)
-                                                          .colorScheme
-                                                          .tertiaryContainer),
-                                                  foregroundColor:
-                                                      MaterialStateProperty.all<
-                                                              Color>(
-                                                          Theme.of(context)
-                                                              .colorScheme
-                                                              .onPrimaryFixed),
-                                                ),
-                                                child: const Text(
-                                                  "Cambio Contacto",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ),
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  setState(() {
-                                                    // _showExitConfirmationDialog('Gestión Pedidos');
-                                                    // _showExitConfirmationDialog('');
-                                                  });
-                                                },
-                                                style: ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStateProperty.all<
-                                                          Color>(Theme.of(
-                                                              context)
-                                                          .colorScheme
-                                                          .tertiaryContainer),
-                                                  foregroundColor:
-                                                      MaterialStateProperty.all<
-                                                              Color>(
-                                                          Theme.of(context)
-                                                              .colorScheme
-                                                              .onPrimaryFixed),
-                                                ),
-                                                child: const Text(
-                                                  "Anular Pedido",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          ElevatedButton(
-                                            onPressed: () {
-                                              setState(
-                                                () {
-                                                  _showExitConfirmationDialog(
-                                                      'Gestión Pedidos',index);
-                                                  // _showExitConfirmationDialog('');
-                                                },
-                                              );
-                                            },
-                                            child: const Text(
-                                              "Atras",
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                  ],
-                )
-              : SizedBox()
+                  ),
+                ],
+              ),
+            ),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => Punto(param: arr),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
   }
+}
+
+Widget DatosCliente(BuildContext context, arr) {
+  return Column(
+    children: [
+      Row(
+        children: [
+          Text(
+            "Cliente: ",
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.bold),
+          ),
+          Text(arr['cliente_razon_social'] ?? ""),
+        ],
+      ),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Punto: ",
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.bold),
+          ),
+          Expanded(
+            child: Text(
+              arr['cliente_punto_razon_social'] ?? arr['punto_razon_social'],
+              maxLines: 2,
+            ),
+          ),
+        ],
+      ),
+      Row(
+        children: [
+          Text(
+            "Usuario: ",
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.bold),
+          ),
+          Text(arr['username'] ?? ""),
+        ],
+      ),
+      const SizedBox(height: 10),
+    ],
+  );
+}
+
+Widget WidgetCabecera(BuildContext context, arr) {
+  return Column(
+    children: [
+      Row(
+        children: [
+          Text(
+            "Cliente: ",
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.bold),
+          ),
+          Text(arr['cliente_razon_social'] ?? ""),
+        ],
+      ),
+      Row(
+        children: [
+          Text(
+            "Usuario: ",
+            style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.bold),
+          ),
+          Text(arr['username'] ?? ""),
+        ],
+      ),
+      const SizedBox(height: 10),
+    ],
+  );
 }
 
 Widget WidgetRuta(BuildContext context) {
