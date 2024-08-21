@@ -92,6 +92,7 @@ class _PuntoState extends State<Punto> {
                   onPressed: () {
                     print(widget.param['pedidos']);
                     return;
+                    // revisar
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => Tripulacion(param: widget.param),
