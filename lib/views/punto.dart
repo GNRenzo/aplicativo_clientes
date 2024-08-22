@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -8,8 +7,7 @@ import 'package:microcash_cliente/views/tripulacion.dart';
 import 'home.dart';
 
 class Punto extends StatefulWidget {
-  final Map<String,dynamic> param;
-
+  final Map<String, dynamic> param;
 
   Punto({super.key, required this.param});
 
@@ -18,10 +16,8 @@ class Punto extends StatefulWidget {
 }
 
 class _PuntoState extends State<Punto> {
-
   late Timer _timer;
   DateTime _currentDateTime = DateTime.now();
-  String _selectedService = '';
 
   @override
   void initState() {
@@ -38,6 +34,7 @@ class _PuntoState extends State<Punto> {
     _timer.cancel();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,23 +76,18 @@ class _PuntoState extends State<Punto> {
         width: MediaQuery.sizeOf(context).width,
         padding: const EdgeInsets.all(20),
         decoration: const BoxDecoration(color: Colors.white),
-        child:
-
-        Column(
+        child: Column(
           children: [
-            DatosCliente(context,widget.param),
-            Text("${widget.param['pedidos']}"),
+            DatosCliente(context, widget.param),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    print(widget.param['pedidos']);
-                    return;
-                    // revisar
+                    List datos = widget.param['pedidos']['tripulacion'];
                     Navigator.of(context).push(
                       MaterialPageRoute(
-                        builder: (context) => Tripulacion(param: widget.param),
+                        builder: (context) => Tripulacion(param: datos),
                       ),
                     );
                   },
@@ -128,7 +120,6 @@ class _PuntoState extends State<Punto> {
                 ),
               ],
             ),
-
           ],
         ),
       ),

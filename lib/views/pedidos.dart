@@ -42,7 +42,6 @@ class _TripulacionState extends State<Pedidos> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.param);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.onPrimaryFixed,

@@ -4,11 +4,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/intl.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+
 import 'home.dart';
-import 'package:image/image.dart' as ima;
 
 class Tripulacion extends StatefulWidget {
-  final dynamic param;
+  final List param;
 
   Tripulacion({super.key, required this.param});
 
@@ -27,6 +28,22 @@ class _TripulacionState extends State<Tripulacion> {
   late final TextEditingController _controllercodigo = TextEditingController();
   late final TextEditingController _controllerdni = TextEditingController();
 
+  bool existe = false;
+  var tripulacion = {
+    'dni': '',
+    'codigo_oficial': '',
+    'nombre_oficial': '',
+    'ruta_foto': '',
+    'url_foto': '',
+    'ruta_firma': '',
+    'url_firma': '',
+    'tipo_oficial': '',
+    'placa_vehiculo': '',
+    'tipo_vehiculo': '',
+  };
+  bool _isCodigoEnabled = true;
+  bool _isDniEnabled = true;
+
   @override
   void initState() {
     super.initState();
@@ -40,12 +57,13 @@ class _TripulacionState extends State<Tripulacion> {
   @override
   void dispose() {
     _timer.cancel();
+    _controllercodigo.dispose();
+    _controllerdni.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    print(widget.param);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.onPrimaryFixed,
@@ -87,7 +105,7 @@ class _TripulacionState extends State<Tripulacion> {
         decoration: const BoxDecoration(color: Colors.white),
         child: Column(
           children: [
-            DatosCliente(context, widget.param),
+            // DatosCliente(context, widget.param),
             Container(
               alignment: Alignment.center,
               width: MediaQuery.sizeOf(context).width,
@@ -117,9 +135,18 @@ class _TripulacionState extends State<Tripulacion> {
                                   border: OutlineInputBorder(),
                                 ),
                                 onChanged: (value) {
-                                  // data['num_serial'] = value;
+                                  if (value.isNotEmpty) {
+                                    setState(() {
+                                      _isDniEnabled = false;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      _isDniEnabled = true;
+                                    });
+                                  }
                                 },
                                 textInputAction: TextInputAction.next,
+                                enabled: _isCodigoEnabled,
                               ),
                               const SizedBox(height: 15),
                               TextFormField(
@@ -129,9 +156,18 @@ class _TripulacionState extends State<Tripulacion> {
                                   border: OutlineInputBorder(),
                                 ),
                                 onChanged: (value) {
-                                  // data['num_serial'] = value;
+                                  if (value.isNotEmpty) {
+                                    setState(() {
+                                      _isCodigoEnabled = false;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      _isCodigoEnabled = true;
+                                    });
+                                  }
                                 },
                                 textInputAction: TextInputAction.next,
+                                enabled: _isDniEnabled,
                               ),
                               const SizedBox(height: 20),
                               Row(
@@ -141,7 +177,76 @@ class _TripulacionState extends State<Tripulacion> {
                                   ElevatedButton(
                                     onPressed: () {
                                       setState(() {
-                                        verDetalle = true;
+                                        if (_controllercodigo.text != '' ||
+                                            _controllerdni.text != '') {
+                                          existe = false;
+                                          if (_controllercodigo.text != '') {
+                                            for (var regis in widget.param) {
+                                              if (_controllercodigo.text ==
+                                                  regis['codigo_oficial']) {
+                                                existe = true;
+                                                tripulacion = {
+                                                  'dni': regis['dni'],
+                                                  'codigo_oficial':
+                                                      regis['codigo_oficial'],
+                                                  'nombre_oficial':
+                                                      regis['nombre_oficial'],
+                                                  'ruta_foto':
+                                                      regis['ruta_foto'],
+                                                  'url_foto': regis['url_foto'],
+                                                  'ruta_firma':
+                                                      regis['ruta_firma'],
+                                                  'url_firma':
+                                                      regis['url_firma'],
+                                                  'tipo_oficial':
+                                                      regis['tipo_oficial'],
+                                                  'placa_vehiculo':
+                                                      regis['placa_vehiculo'],
+                                                  'tipo_vehiculo':
+                                                      regis['tipo_vehiculo'],
+                                                };
+                                              }
+                                            }
+                                          } else {
+                                            for (var regis in widget.param) {
+                                              if (_controllerdni.text ==
+                                                  regis['dni'].toString().trim()) {
+                                                existe = true;
+                                                tripulacion = {
+                                                  'dni': regis['dni'],
+                                                  'codigo_oficial':
+                                                      regis['codigo_oficial'],
+                                                  'nombre_oficial':
+                                                      regis['nombre_oficial'],
+                                                  'ruta_foto':
+                                                      regis['ruta_foto'],
+                                                  'url_foto': regis['url_foto'],
+                                                  'ruta_firma':
+                                                      regis['ruta_firma'],
+                                                  'url_firma':
+                                                      regis['url_firma'],
+                                                  'tipo_oficial':
+                                                      regis['tipo_oficial'],
+                                                  'placa_vehiculo':
+                                                      regis['placa_vehiculo'],
+                                                  'tipo_vehiculo':
+                                                      regis['tipo_vehiculo'],
+                                                };
+                                              }
+                                            }
+                                          }
+
+                                          if (existe) {
+                                            verDetalle = true;
+                                          } else {
+                                            Fluttertoast.showToast(
+                                                msg: "No Existen Datos ");
+                                          }
+                                        } else {
+                                          Fluttertoast.showToast(
+                                              msg:
+                                                  "Debe Ingresar Datos Correctos");
+                                        }
                                       });
                                     },
                                     style: ButtonStyle(
@@ -162,6 +267,7 @@ class _TripulacionState extends State<Tripulacion> {
                                   ),
                                   ElevatedButton(
                                     onPressed: () {
+                                      limpiar();
                                       Navigator.of(context).pop();
                                     },
                                     style: ButtonStyle(
@@ -187,7 +293,7 @@ class _TripulacionState extends State<Tripulacion> {
                             ],
                           )
                         : SizedBox(),
-                    verDetalle ? Center(child: WidgetDatosUser()) : SizedBox()
+                    verDetalle ? Center(child: WidgetDatosUser(tripulacion)) : SizedBox()
                   ],
                 )
               ],
@@ -198,7 +304,7 @@ class _TripulacionState extends State<Tripulacion> {
     );
   }
 
-  Widget WidgetDatosUser() {
+  Widget WidgetDatosUser(Map<String, String> tripulacion) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -224,7 +330,7 @@ class _TripulacionState extends State<Tripulacion> {
             ),
             Flexible(
               child: Text(
-                'XYZ',
+                "${tripulacion['tipo_vehiculo']} - ${tripulacion['placa_vehiculo']}",
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
                 textScaleFactor: 1,
@@ -253,22 +359,25 @@ class _TripulacionState extends State<Tripulacion> {
         ),
         Center(
           child: Image.network(
-            'https://www.freepsdking.com/wp-content/uploads/2023/03/20X30-Album-Design-PSD-Free-Download-Freepsdking.com-1.webp',
-            height: MediaQuery.sizeOf(context).height*0.2,
-            loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+            '${tripulacion['url_foto']}',
+            height: MediaQuery.sizeOf(context).height * 0.2,
+            loadingBuilder: (BuildContext context, Widget child,
+                ImageChunkEvent? loadingProgress) {
               if (loadingProgress == null) {
                 return child;
               } else {
                 return Center(
                   child: CircularProgressIndicator(
                     value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            (loadingProgress.expectedTotalBytes ?? 1)
                         : null,
                   ),
                 );
               }
             },
-            errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+            errorBuilder:
+                (BuildContext context, Object error, StackTrace? stackTrace) {
               return Text('No se pudo cargar la imagen');
             },
           ),
@@ -290,24 +399,27 @@ class _TripulacionState extends State<Tripulacion> {
         ),
         Center(
           child: Image.network(
-            'https://www.freepsdking.com/wp-content/uploads/2023/03/20X30-Album-Design-PSD-Free-Download-Freepsdking.com-1.webp',
-            height: MediaQuery.sizeOf(context).height*0.15,
-            width: MediaQuery.sizeOf(context).width*0.5,
+            '${tripulacion['url_firma']}',
+            height: MediaQuery.sizeOf(context).height * 0.15,
+            width: MediaQuery.sizeOf(context).width * 0.5,
             fit: BoxFit.cover,
-            loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+            loadingBuilder: (BuildContext context, Widget child,
+                ImageChunkEvent? loadingProgress) {
               if (loadingProgress == null) {
                 return child;
               } else {
                 return Center(
                   child: CircularProgressIndicator(
                     value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1)
+                        ? loadingProgress.cumulativeBytesLoaded /
+                            (loadingProgress.expectedTotalBytes ?? 1)
                         : null,
                   ),
                 );
               }
             },
-            errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+            errorBuilder:
+                (BuildContext context, Object error, StackTrace? stackTrace) {
               return Text('No se pudo cargar la imagen');
             },
           ),
@@ -317,6 +429,7 @@ class _TripulacionState extends State<Tripulacion> {
           child: ElevatedButton(
             onPressed: () {
               setState(() {
+                limpiar();
                 verDetalle = false;
               });
             },
@@ -331,5 +444,24 @@ class _TripulacionState extends State<Tripulacion> {
         ),
       ],
     );
+  }
+
+  void limpiar() {
+    _controllerdni.text='';
+    _controllercodigo.text='';
+    _isCodigoEnabled = true;
+    _isDniEnabled = true;
+    tripulacion = {
+      'dni':'',
+      'codigo_oficial':'',
+      'nombre_oficial':'',
+      'ruta_foto':'',
+      'url_foto':'',
+      'ruta_firma':'',
+      'url_firma':'',
+      'tipo_oficial':'',
+      'placa_vehiculo':'',
+      'tipo_vehiculo':'',
+    };
   }
 }
