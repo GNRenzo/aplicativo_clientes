@@ -235,7 +235,6 @@ class _TripulacionState extends State<Tripulacion> {
                                               }
                                             }
                                           }
-
                                           if (existe) {
                                             verDetalle = true;
                                           } else {
