@@ -172,7 +172,6 @@ class _TripulacionState extends State<Tripulacion> {
                                           existe = false;
                                           if (_controllercodigo.text != '') {
                                             for (var regis in widget.param) {
-                                              print(regis);
                                               if (regis['key_estado_plan_id'] == 22) {
                                                 for (var trip in regis['tripulacion']) {
                                                   if (_controllercodigo.text == trip['codigo_oficial'] && trip['tipo_oficial'].toString().trim() == 'OFICIAL') {
@@ -197,7 +196,6 @@ class _TripulacionState extends State<Tripulacion> {
                                             for (var regis in widget.param) {
                                               if (regis['key_estado_plan_id'] == 22) {
                                                 for (var trip in regis['tripulacion']) {
-                                                  print(trip);
                                                   if (_controllerdni.text == trip['dni'].toString().trim() && trip['tipo_oficial'].toString().trim() == 'OFICIAL') {
                                                     existe = true;
                                                     tripulacion = {
