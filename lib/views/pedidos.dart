@@ -174,168 +174,197 @@ class _TripulacionState extends State<Pedidos> {
     }).toList();
 
     return pedidosFiltrados.length > 0
-        ? Container(
-            height: MediaQuery.sizeOf(context).height * 0.67,
-            child: ListView.builder(
-              itemCount: pedidosFiltrados.length,
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    Column(
-                      children: [
-                        buildDataRow(context, 'FECHA', pedidosFiltrados[index]['fecha_atencion'] ?? '', false),
-                        buildDataRow(context, 'DIRECCION', pedidosFiltrados[index]['punto_direccion'] ?? '', false),
-                        buildDataRow(context, 'DISTRITO', pedidosFiltrados[index]['distrito'] ?? '', false),
-                        buildDataRow(context, 'PROVINCIA', pedidosFiltrados[index]['provincia'] ?? '', false),
-                        buildDataRow(context, 'TIPO DE FDS', pedidosFiltrados[index]["tipo_fds"], false),
-                        buildDataRow(context, 'CONTACTO 1', pedidosFiltrados[index]['punto_nombre_contacto_ope'] ?? '', false),
-                        buildDataRow(context, 'CONTACTO 2', pedidosFiltrados[index]['punto_nombre_contacto_ope2'] ?? '', false),
-                        buildDataRow(context, 'FRECUENCIA', pedidosFiltrados[index]['categoria_frecuencia'], false),
-                        buildDataRow(context, 'VALOR FRECUENCIA', pedidosFiltrados[index]['frecuencia'], false),
-                      ],
-                    ),
-                    const Divider(),
-                    WidgetRuta(context, pedidosFiltrados[index], idEstado),
-                    const SizedBox(height: 20),
-                    editContacto == 0
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    editContacto = int.parse(pedidosFiltrados[index]['key_punto'].toString()) ?? 0;
-                                    idPedido = int.parse(pedidosFiltrados[index]['key_plan_diario'].toString()) ?? 0;
+        ? Expanded(
+            child: Container(
+              height: MediaQuery.sizeOf(context).height * 0.67,
+              child: ListView.builder(
+                itemCount: pedidosFiltrados.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      Column(
+                        children: [
+                          buildDataRow(context, 'FECHA', pedidosFiltrados[index]['fecha_atencion'] ?? '', false),
+                          buildDataRow(context, 'DIRECCION', pedidosFiltrados[index]['punto_direccion'] ?? '', false),
+                          buildDataRow(context, 'DISTRITO', pedidosFiltrados[index]['distrito'] ?? '', false),
+                          buildDataRow(context, 'PROVINCIA', pedidosFiltrados[index]['provincia'] ?? '', false),
+                          buildDataRow(context, 'TIPO DE FDS', pedidosFiltrados[index]["tipo_fds"], false),
+                          buildDataRow(context, 'CONTACTO 1', pedidosFiltrados[index]['punto_nombre_contacto_ope'] ?? '', false),
+                          buildDataRow(context, 'CONTACTO 2', pedidosFiltrados[index]['punto_nombre_contacto_ope2'] ?? '', false),
+                          buildDataRow(context, 'FRECUENCIA', pedidosFiltrados[index]['categoria_frecuencia'], false),
+                          buildDataRow(context, 'VALOR FRECUENCIA', pedidosFiltrados[index]['frecuencia'], false),
+                        ],
+                      ),
+                      const Divider(),
+                      WidgetRuta(context, pedidosFiltrados[index], idEstado),
+                      const SizedBox(height: 20),
+                      editContacto == 0
+                          ? Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      editContacto = int.parse(pedidosFiltrados[index]['key_punto'].toString()) ?? 0;
+                                      idPedido = int.parse(pedidosFiltrados[index]['key_plan_diario'].toString()) ?? 0;
 
-                                    nom1.text = pedidosFiltrados[index]['punto_nombre_contacto_ope'];
-                                    num1.text = pedidosFiltrados[index]['punto_telefono_contacto_ope'];
-                                    nom2.text = pedidosFiltrados[index]['punto_nombre_contacto_ope2'];
-                                    num2.text = pedidosFiltrados[index]['punto_telefono_contacto_ope2'];
-                                  });
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
-                                  foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
-                                ),
-                                child: const Text(
-                                  "Cambio Contacto",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  int idUsuario = pedidosFiltrados[index]['user_id'];
-                                  int key = pedidosFiltrados[index]['key_plan_diario'];
-                                  print(key);
-                                  setState(() {
-                                    pedidosFiltrados[index]['key_estado_plan_id'] = -1;
-                                    _showExitConfirmationDialog(idUsuario, key);
-                                  });
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
-                                  foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
-                                ),
-                                child: const Text(
-                                  "Anular Pedido",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                              ),
-                            ],
-                          )
-                        : SizedBox(),
-                    editContacto == 0
-                        ? SizedBox()
-                        : pedidosFiltrados[index]['key_plan_diario'] == idPedido
-                            ? Column(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(3.0),
-                                    child: TextFormField(
-                                      controller: nom1,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Nombre Contacto 1',
-                                        border: OutlineInputBorder(),
-                                      ),
-                                      textInputAction: TextInputAction.next,
-                                    ),
+                                      nom1.text = pedidosFiltrados[index]['punto_nombre_contacto_ope'];
+                                      num1.text = pedidosFiltrados[index]['punto_telefono_contacto_ope'];
+                                      nom2.text = pedidosFiltrados[index]['punto_nombre_contacto_ope2'];
+                                      num2.text = pedidosFiltrados[index]['punto_telefono_contacto_ope2'];
+                                    });
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
+                                    foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(3.0),
-                                    child: TextFormField(
-                                      controller: num1,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Teléfono Contacto 1',
-                                        border: OutlineInputBorder(),
-                                      ),
-                                      textInputAction: TextInputAction.next,
-                                    ),
+                                  child: const Text(
+                                    "Cambio Contacto",
+                                    style: TextStyle(fontWeight: FontWeight.bold),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(3.0),
-                                    child: TextFormField(
-                                      controller: nom2,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Nombre Contacto 2',
-                                        border: OutlineInputBorder(),
-                                      ),
-                                      textInputAction: TextInputAction.next,
-                                    ),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    int idUsuario = pedidosFiltrados[index]['user_id'];
+                                    int key = pedidosFiltrados[index]['key_plan_diario'];
+                                    print(key);
+                                    setState(() {
+                                      pedidosFiltrados[index]['key_estado_plan_id'] = -1;
+                                      _showExitConfirmationDialog(idUsuario, key);
+                                    });
+                                  },
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
+                                    foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(3.0),
-                                    child: TextFormField(
-                                      controller: num2,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Teléfono Contacto 2',
-                                        border: OutlineInputBorder(),
-                                      ),
-                                      textInputAction: TextInputAction.next,
-                                    ),
+                                  child: const Text(
+                                    "Anular Pedido",
+                                    style: TextStyle(fontWeight: FontWeight.bold),
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                    children: [
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            editContacto = 0;
-                                            limpiar();
-                                          });
-                                        },
-                                        style: ButtonStyle(
-                                          backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
-                                          foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
+                                ),
+                              ],
+                            )
+                          : SizedBox(),
+                      editContacto == 0
+                          ? SizedBox()
+                          : pedidosFiltrados[index]['key_plan_diario'] == idPedido
+                              ? Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: TextFormField(
+                                        controller: nom1,
+                                        decoration: const InputDecoration(
+                                          labelText: 'Nombre Contacto 1',
+                                          border: OutlineInputBorder(),
                                         ),
-                                        child: const Text(
-                                          "Guardar",
-                                          style: TextStyle(fontWeight: FontWeight.bold),
-                                        ),
+                                        textInputAction: TextInputAction.next,
                                       ),
-                                      ElevatedButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            editContacto = 0;
-                                            limpiar();
-                                          });
-                                        },
-                                        style: ButtonStyle(
-                                          backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
-                                          foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: TextFormField(
+                                        controller: num1,
+                                        decoration: const InputDecoration(
+                                          labelText: 'Teléfono Contacto 1',
+                                          border: OutlineInputBorder(),
                                         ),
-                                        child: const Text(
-                                          "Cancelar",
-                                          style: TextStyle(fontWeight: FontWeight.bold),
-                                        ),
+                                        textInputAction: TextInputAction.next,
                                       ),
-                                    ],
-                                  )
-                                ],
-                              )
-                            : SizedBox(),
-                  ],
-                );
-              },
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: TextFormField(
+                                        controller: nom2,
+                                        decoration: const InputDecoration(
+                                          labelText: 'Nombre Contacto 2',
+                                          border: OutlineInputBorder(),
+                                        ),
+                                        textInputAction: TextInputAction.next,
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(3.0),
+                                      child: TextFormField(
+                                        controller: num2,
+                                        decoration: const InputDecoration(
+                                          labelText: 'Teléfono Contacto 2',
+                                          border: OutlineInputBorder(),
+                                        ),
+                                        textInputAction: TextInputAction.next,
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            setState(() async {
+                                              var headers = {'Content-Type': 'application/json'};
+                                              var data = json.encode({
+                                                "nombre_contacto_ope": nom1.text,
+                                                "telefono_contacto_ope": num1.text,
+                                                "nombre_contacto_ope2": nom2.text,
+                                                "telefono_contacto_ope2": num2.text,
+                                                "key_user_event": pedidosFiltrados[index]['user_id']
+                                              });
+                                              var dio = Dio();
+                                              var response = await dio.request(
+                                                'http://armadillo-microcash.com/etarma_backend/tablas/punto_asociado/modificar_contactos_apk/21',
+                                                options: Options(
+                                                  method: 'PATCH',
+                                                  headers: headers,
+                                                ),
+                                                data: data,
+                                              );
+
+                                              if (response.statusCode == 200) {
+                                                print(json.encode(response.data));
+                                              } else {
+                                                print(response.statusMessage);
+                                              }
+                                              pedidosFiltrados[index]['punto_nombre_contacto_ope'] = nom1.text;
+                                              pedidosFiltrados[index]['punto_telefono_contacto_ope'] = num1.text;
+                                              pedidosFiltrados[index]['punto_nombre_contacto_ope2'] = nom2.text;
+                                              pedidosFiltrados[index]['punto_telefono_contacto_ope2'] = num2.text;
+                                              editContacto = 0;
+                                              limpiar();
+                                            });
+                                          },
+                                          style: ButtonStyle(
+                                            backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
+                                            foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
+                                          ),
+                                          child: const Text(
+                                            "Guardar",
+                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              editContacto = 0;
+                                              limpiar();
+                                            });
+                                          },
+                                          style: ButtonStyle(
+                                            backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
+                                            foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
+                                          ),
+                                          child: const Text(
+                                            "Cancelar",
+                                            style: TextStyle(fontWeight: FontWeight.bold),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                )
+                              : SizedBox(),
+                    ],
+                  );
+                },
+              ),
             ),
           )
         : const SizedBox();
@@ -354,7 +383,7 @@ class _TripulacionState extends State<Pedidos> {
 
   void _showExitConfirmationDialog(int idUser, int key_pedido) async {
     var headers = {'Content-Type': 'application/json'};
-    var data = json.encode({"key_user_event": 14});
+    var data = json.encode({"key_user_event": idUser});
     var dio = Dio();
     var response = await dio.request(
       'http://armadillo-microcash.com/etarma_backend/solped/plan_diario/anular_cliente_apk/$key_pedido',
