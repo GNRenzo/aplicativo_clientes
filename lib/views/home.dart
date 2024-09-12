@@ -91,18 +91,11 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               'MICROCASH',
               textScaleFactor: 1,
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14),
+              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.w600, fontSize: 14),
             ),
             Text(
-              DateFormat('dd MMM yyyy hh:mma', 'es_ES')
-                  .format(_currentDateTime),
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 13),
+              DateFormat('dd MMM yyyy hh:mma', 'es_ES').format(_currentDateTime),
+              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 13),
             )
           ],
         ),
@@ -112,8 +105,7 @@ class _MyHomePageState extends State<MyHomePage> {
             color: Theme.of(context).colorScheme.tertiaryContainer,
           ),
           onPressed: () {
-            Navigator.of(context).pushReplacement(
-                MaterialPageRoute(builder: (context) => const LoginPage()));
+            Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const LoginPage()));
           },
         ),
         centerTitle: true,
@@ -130,9 +122,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: ListView.builder(
                 itemCount: widget.trabajador.length,
                 itemBuilder: (context, index) {
-                  return widget.trabajador[index]['id_tipo_usuario'] != 1
-                      ? PuntoCliente(widget.trabajador[index])
-                      : SizedBox();
+                  return widget.trabajador[index]['id_tipo_usuario'] != 1 ? PuntoCliente(widget.trabajador[index]) : SizedBox();
                 },
               ),
             )
@@ -152,7 +142,7 @@ class _MyHomePageState extends State<MyHomePage> {
             child: Container(
               height: MediaQuery.sizeOf(context).height * 0.07,
               decoration: BoxDecoration(
-              color: Colors.grey.withOpacity(0.2),
+                color: Colors.grey.withOpacity(0.2),
                 borderRadius: const BorderRadius.all(Radius.circular(10.0)),
               ),
               padding: EdgeInsets.symmetric(horizontal: 25),
@@ -161,14 +151,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 children: [
                   Text(
                     "Punto: ",
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontWeight: FontWeight.bold),
+                    style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
                   ),
                   Expanded(
                     child: Text(
-                      arr['cliente_punto_razon_social'] ??
-                          arr['punto_razon_social'],
+                      arr['cliente_punto_razon_social'] ?? arr['punto_razon_social'],
                       maxLines: 2,
                     ),
                   ),
@@ -196,9 +183,7 @@ Widget DatosCliente(BuildContext context, arr) {
         children: [
           Text(
             "Cliente: ",
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold),
+            style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
           ),
           Text(arr['cliente_razon_social'] ?? ""),
         ],
@@ -208,9 +193,7 @@ Widget DatosCliente(BuildContext context, arr) {
         children: [
           Text(
             "Punto: ",
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold),
+            style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
           ),
           Expanded(
             child: Text(
@@ -224,9 +207,7 @@ Widget DatosCliente(BuildContext context, arr) {
         children: [
           Text(
             "Usuario: ",
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold),
+            style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
           ),
           Text(arr['username'] ?? ""),
         ],
@@ -243,9 +224,7 @@ Widget WidgetCabecera(BuildContext context, arr) {
         children: [
           Text(
             "Cliente: ",
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold),
+            style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
           ),
           Text(arr['cliente_razon_social'] ?? ""),
         ],
@@ -254,9 +233,7 @@ Widget WidgetCabecera(BuildContext context, arr) {
         children: [
           Text(
             "Usuario: ",
-            style: TextStyle(
-                color: Theme.of(context).colorScheme.primary,
-                fontWeight: FontWeight.bold),
+            style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
           ),
           Text(arr['username'] ?? ""),
         ],
@@ -266,47 +243,7 @@ Widget WidgetCabecera(BuildContext context, arr) {
   );
 }
 
-Widget WidgetRuta(BuildContext context) {
-  return Column(
-    children: [
-      buildDataRow(context, 'RUTA', "001 - CENTRO", true),
-      buildDataRow(context, 'SECUENCIA', "10", true),
-      buildDataRow(context, 'ARCO HORARIO', "09:00 - 11:00", true),
-      buildDataRow(context, 'ESTADO', "", true),
-    ],
-  );
-}
-
-Widget WidgetRuta2(BuildContext context) {
-  return Column(
-    children: [
-      buildDataRow(context, 'RUTA', "", true),
-      buildDataRow(context, 'SECUENCIA', "", true),
-      buildDataRow(context, 'ARCO HORARIO', "09:00 - 11:00", true),
-      buildDataRow(context, 'ESTADO', "", true),
-    ],
-  );
-}
-
-Widget WidgetDatos(BuildContext context) {
-  return Column(
-    children: [
-      buildDataRow(context, 'FECHA', "10/08/2024", false),
-      buildDataRow(
-          context, 'DIRECCION', "Av. alfredo benavides n° 2192", false),
-      buildDataRow(context, 'DISTRITO', "Miraflores", false),
-      buildDataRow(context, 'PROVINCIA', "Lima", false),
-      buildDataRow(context, 'TIPO DE FDS', "1 Fondo de 500 soles", false),
-      buildDataRow(context, 'CONTACTO 1', "CNT 1 PR-014 LA MERCED", false),
-      buildDataRow(context, 'CONTACTO 2', "CNT 1 PR-014 LA MERCED", false),
-      buildDataRow(context, 'FRECUENCIA', "DIARIA", false),
-      buildDataRow(context, 'VALOR FRECUENCIA', "", false),
-    ],
-  );
-}
-
-Widget buildDataRow(
-    BuildContext context, String label, String value, bool col) {
+Widget buildDataRow(BuildContext context, String label, String value, bool col) {
   return Row(
     children: [
       Container(

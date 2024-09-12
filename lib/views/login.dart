@@ -18,8 +18,7 @@ class _LoginPageState extends State<LoginPage> {
 
   int currentYear = DateTime.now().year;
   late final TextEditingController _controllerUser = TextEditingController();
-  late final TextEditingController _controllerPassword =
-      TextEditingController();
+  late final TextEditingController _controllerPassword = TextEditingController();
 
   bool isView = true;
 
@@ -50,29 +49,22 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ),
             backgroundColor: Theme.of(context).colorScheme.onPrimary,
-            shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20))),
+            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(20))),
           );
         },
       );
 
       var dio = Dio();
-      var datas = FormData.fromMap({
-        'username': _controllerUser.text,
-        'password': _controllerPassword.text
-      });
+      var datas = FormData.fromMap({'username': _controllerUser.text, 'password': _controllerPassword.text});
 
       try {
-        String fecha =
-            "${DateTime.now().year.toString().padLeft(4, '0')}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
-        final response =
-            await dio.post("$link/control_accesos/api-token/", data: datas);
+        // String fecha = "${DateTime.now().year.toString().padLeft(4, '0')}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
+        final response = await dio.post("$link/control_accesos/api-token/", data: datas);
         if (response.statusCode == 200) {
-          Map<String, dynamic>? decodedToken =
-              JwtDecoder.decode(response.data['access']);
+          Map<String, dynamic>? decodedToken = JwtDecoder.decode(response.data['access']);
 
           var response2 = await dio.request(
-            '$link/tablas/punto_asociado/listarAPKUsuario/?user_id=${decodedToken?['user_id']}&fecha_atencion=$fecha',
+            '$link/tablas/punto_asociado/listarAPKUsuario/?user_id=${decodedToken?['user_id']}',
             options: Options(
               method: 'GET',
             ),
@@ -86,18 +78,14 @@ class _LoginPageState extends State<LoginPage> {
         }
       } on DioException catch (e) {
         final response = e.response;
-        var err =
-            'Código: 500 \n Error: No se pudo establecer la conexión con el servidor. Revise su conexión a internet e intentelo nuevamente en unos minutos.';
+        var err = 'Código: 500 \n Error: No se pudo establecer la conexión con el servidor. Revise su conexión a internet e intentelo nuevamente en unos minutos.';
 
         if (response != null) {
           // err = 'Código: ${response.statusCode}\n Mensaje: ${response.statusMessage}\n Error: ${response.data.toString()}';
           err = 'Credenciales Incorrectas';
         }
 
-        toasty(context, "Credenciales incorrectas.",
-            bgColor: Theme.of(context).colorScheme.error,
-            textColor: Theme.of(context).colorScheme.onPrimary,
-            gravity: ToastGravity.CENTER);
+        toasty(context, "Credenciales incorrectas.", bgColor: Theme.of(context).colorScheme.error, textColor: Theme.of(context).colorScheme.onPrimary, gravity: ToastGravity.CENTER);
 
         Navigator.of(context).pop();
       }
@@ -114,8 +102,7 @@ class _LoginPageState extends State<LoginPage> {
             Container(
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
-              decoration:
-                  BoxDecoration(color: Theme.of(context).colorScheme.onPrimary),
+              decoration: BoxDecoration(color: Theme.of(context).colorScheme.onPrimary),
             ),
             Positioned(
               bottom: 0,
@@ -137,16 +124,9 @@ class _LoginPageState extends State<LoginPage> {
                                 Column(
                                   children: [
                                     Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: <Widget>[
-                                        Image.asset(
-                                            "assets/images/logo_armadillo.png",
-                                            fit: BoxFit.cover,
-                                            width: 300)
-                                      ],
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: <Widget>[Image.asset("assets/images/logo_armadillo.png", fit: BoxFit.cover, width: 300)],
                                     ),
                                   ],
                                 ),
@@ -168,22 +148,11 @@ class _LoginPageState extends State<LoginPage> {
                                       padding: const EdgeInsets.only(top: 40),
                                       child: Text(
                                         'Clientes',
-                                        style: TextStyle(
-                                            fontFamily: 'inter',
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 35,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .primary),
+                                        style: TextStyle(fontFamily: 'inter', fontWeight: FontWeight.w700, fontSize: 35, color: Theme.of(context).colorScheme.primary),
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
-                                    Text("1.0.1",
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                            fontWeight: FontWeight.bold)),
+                                    Text("1.0.1", style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold)),
                                   ],
                                 ),
                                 const SizedBox(height: 32),
@@ -201,55 +170,30 @@ class _LoginPageState extends State<LoginPage> {
                                       _showLoginModal(context);
                                     },
                                     style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Theme.of(context)
-                                                  .colorScheme
-                                                  .tertiaryContainer),
-                                      foregroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimaryFixed),
+                                      backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
+                                      foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
                                     ),
                                     label: const Text(
                                       '  Iniciar Sesión',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                      style: TextStyle(fontWeight: FontWeight.bold),
                                     ),
                                     icon: const Icon(Icons.login_rounded),
                                   ),
                                 ),
                                 Container(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 8),
+                                  padding: const EdgeInsets.symmetric(horizontal: 8),
                                   margin: const EdgeInsets.only(top: 32),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Text(" Todos los derechos reservados ",
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                              fontWeight: FontWeight.w600,
-                                              fontFamily: 'inter',
-                                              fontSize: 10)),
+                                          style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.w600, fontFamily: 'inter', fontSize: 10)),
                                       Icon(
                                         Icons.copyright_rounded,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
+                                        color: Theme.of(context).colorScheme.secondary,
                                         size: 15,
                                       ),
-                                      Text(" $currentYear",
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                              fontWeight: FontWeight.w600,
-                                              fontFamily: 'inter',
-                                              fontSize: 10)),
+                                      Text(" $currentYear", style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.w600, fontFamily: 'inter', fontSize: 10)),
                                     ],
                                   ),
                                 ),
@@ -270,12 +214,7 @@ class _LoginPageState extends State<LoginPage> {
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Image.asset(
-                                      "assets/images/logo_armadillo.png",
-                                      fit: BoxFit.cover,
-                                      width: 300)
-                                ],
+                                children: <Widget>[Image.asset("assets/images/logo_armadillo.png", fit: BoxFit.cover, width: 300)],
                               ),
                             ],
                           ),
@@ -287,22 +226,11 @@ class _LoginPageState extends State<LoginPage> {
                                 padding: const EdgeInsets.only(top: 40),
                                 child: Text(
                                   'Clientes',
-                                  style: TextStyle(
-                                      fontFamily: 'inter',
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 35,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .primary),
+                                  style: TextStyle(fontFamily: 'inter', fontWeight: FontWeight.w700, fontSize: 35, color: Theme.of(context).colorScheme.primary),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-                              Text("1.0.1",
-                                  style: TextStyle(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      fontWeight: FontWeight.bold)),
+                              Text("1.0.1", style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold)),
                             ],
                           ),
                           const Expanded(child: SizedBox()),
@@ -323,55 +251,30 @@ class _LoginPageState extends State<LoginPage> {
                                     _showLoginModal(context);
                                   },
                                   style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Theme.of(context)
-                                                .colorScheme
-                                                .tertiaryContainer),
-                                    foregroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Theme.of(context)
-                                                .colorScheme
-                                                .onPrimaryFixed),
+                                    backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
+                                    foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
                                   ),
                                   label: const Text(
                                     '  Iniciar Sesión',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
+                                    style: TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                   icon: const Icon(Icons.login_rounded),
                                 ),
                               ),
                               Container(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
+                                padding: const EdgeInsets.symmetric(horizontal: 8),
                                 margin: const EdgeInsets.only(top: 32),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Text(" Todos los derechos reservados ",
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                            fontWeight: FontWeight.w600,
-                                            fontFamily: 'inter',
-                                            fontSize: 10)),
+                                        style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.w600, fontFamily: 'inter', fontSize: 10)),
                                     Icon(
                                       Icons.copyright_rounded,
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
+                                      color: Theme.of(context).colorScheme.secondary,
                                       size: 15,
                                     ),
-                                    Text(" $currentYear",
-                                        style: TextStyle(
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                            fontWeight: FontWeight.w600,
-                                            fontFamily: 'inter',
-                                            fontSize: 10)),
+                                    Text(" $currentYear", style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.w600, fontFamily: 'inter', fontSize: 10)),
                                   ],
                                 ),
                               ),
@@ -403,10 +306,7 @@ class _LoginPageState extends State<LoginPage> {
         return StatefulBuilder(
           builder: (BuildContext context, StateSetter setState) {
             return Container(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom + 16,
-                  left: 32,
-                  right: 32),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 16, left: 32, right: 32),
               child: SingleChildScrollView(
                 child: Form(
                   key: _formKey,
@@ -415,11 +315,7 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       Text(
                         'Iniciar Sesión',
-                        style: TextStyle(
-                            fontFamily: 'inter',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 25,
-                            color: Theme.of(context).colorScheme.primary),
+                        style: TextStyle(fontFamily: 'inter', fontWeight: FontWeight.w700, fontSize: 25, color: Theme.of(context).colorScheme.primary),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 32),
@@ -438,36 +334,24 @@ class _LoginPageState extends State<LoginPage> {
                           labelText: 'Usuario',
                           hintText: 'Ingrese su usuario',
                           border: OutlineInputBorder(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(100.0)),
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.primary),
+                            borderRadius: const BorderRadius.all(Radius.circular(100.0)),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(100.0)),
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.primary),
+                            borderRadius: const BorderRadius.all(Radius.circular(100.0)),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(100.0)),
-                            borderSide: BorderSide(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .tertiaryContainer),
+                            borderRadius: const BorderRadius.all(Radius.circular(100.0)),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiaryContainer),
                           ),
                           errorBorder: OutlineInputBorder(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(100.0)),
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.error),
+                            borderRadius: const BorderRadius.all(Radius.circular(100.0)),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
                           ),
                           focusedErrorBorder: OutlineInputBorder(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(100.0)),
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.error),
+                            borderRadius: const BorderRadius.all(Radius.circular(100.0)),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
                           ),
                         ),
                         validator: (value) {
@@ -491,9 +375,7 @@ class _LoginPageState extends State<LoginPage> {
                             color: Theme.of(context).colorScheme.primary,
                           ),
                           suffixIcon: IconButton(
-                              icon: Icon(isView
-                                  ? Icons.remove_red_eye
-                                  : Icons.visibility_off),
+                              icon: Icon(isView ? Icons.remove_red_eye : Icons.visibility_off),
                               onPressed: () {
                                 setState(() {
                                   isView = !isView;
@@ -502,36 +384,24 @@ class _LoginPageState extends State<LoginPage> {
                           labelText: 'Contraseña',
                           hintText: 'Ingrese su contraseña',
                           border: OutlineInputBorder(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(100.0)),
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.primary),
+                            borderRadius: const BorderRadius.all(Radius.circular(100.0)),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
                           ),
                           enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(100.0)),
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.primary),
+                            borderRadius: const BorderRadius.all(Radius.circular(100.0)),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.primary),
                           ),
                           focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(100.0)),
-                            borderSide: BorderSide(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .tertiaryContainer),
+                            borderRadius: const BorderRadius.all(Radius.circular(100.0)),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiaryContainer),
                           ),
                           errorBorder: OutlineInputBorder(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(100.0)),
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.error),
+                            borderRadius: const BorderRadius.all(Radius.circular(100.0)),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
                           ),
                           focusedErrorBorder: OutlineInputBorder(
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(100.0)),
-                            borderSide: BorderSide(
-                                color: Theme.of(context).colorScheme.error),
+                            borderRadius: const BorderRadius.all(Radius.circular(100.0)),
+                            borderSide: BorderSide(color: Theme.of(context).colorScheme.error),
                           ),
                         ),
                         validator: (value) {
@@ -551,16 +421,8 @@ class _LoginPageState extends State<LoginPage> {
                                 Navigator.of(context).pop();
                               },
                               style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Theme.of(context)
-                                            .colorScheme
-                                            .secondaryFixed),
-                                foregroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Theme.of(context)
-                                            .colorScheme
-                                            .onPrimaryFixed),
+                                backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.secondaryFixed),
+                                foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
                               ),
                               label: const Text(
                                 'Cerrar',
@@ -575,16 +437,8 @@ class _LoginPageState extends State<LoginPage> {
                               child: ElevatedButton.icon(
                                 onPressed: _validateAndSubmit,
                                 style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Theme.of(context)
-                                              .colorScheme
-                                              .tertiaryContainer),
-                                  foregroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Theme.of(context)
-                                              .colorScheme
-                                              .onPrimaryFixed),
+                                  backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
+                                  foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
                                 ),
                                 label: const Text(
                                   '  Ingresar',

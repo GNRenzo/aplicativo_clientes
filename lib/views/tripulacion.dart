@@ -73,18 +73,11 @@ class _TripulacionState extends State<Tripulacion> {
             Text(
               'MICROCASH',
               textScaleFactor: 1,
-              style: TextStyle(
-                  color: Theme.of(context).colorScheme.onPrimary,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14),
+              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary, fontWeight: FontWeight.w600, fontSize: 14),
             ),
             Text(
-              DateFormat('dd MMM yyyy hh:mma', 'es_ES')
-                  .format(_currentDateTime),
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  fontSize: 13),
+              DateFormat('dd MMM yyyy hh:mma', 'es_ES').format(_currentDateTime),
+              style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, fontSize: 13),
             )
           ],
         ),
@@ -114,8 +107,7 @@ class _TripulacionState extends State<Tripulacion> {
               child: Text(
                 "Verificar Tripulación",
                 textScaleFactor: 1,
-                style:
-                    const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
               ),
             ),
             Column(
@@ -171,98 +163,75 @@ class _TripulacionState extends State<Tripulacion> {
                               ),
                               const SizedBox(height: 20),
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
                                 children: [
                                   ElevatedButton(
                                     onPressed: () {
                                       setState(() {
-                                        if (_controllercodigo.text != '' ||
-                                            _controllerdni.text != '') {
+                                        if (_controllercodigo.text != '' || _controllerdni.text != '') {
                                           existe = false;
                                           if (_controllercodigo.text != '') {
                                             for (var regis in widget.param) {
-                                              if (_controllercodigo.text ==
-                                                  regis['codigo_oficial']) {
-                                                existe = true;
-                                                tripulacion = {
-                                                  'dni': regis['dni'],
-                                                  'codigo_oficial':
-                                                      regis['codigo_oficial'],
-                                                  'nombre_oficial':
-                                                      regis['nombre_oficial'],
-                                                  'ruta_foto':
-                                                      regis['ruta_foto'],
-                                                  'url_foto': regis['url_foto'],
-                                                  'ruta_firma':
-                                                      regis['ruta_firma'],
-                                                  'url_firma':
-                                                      regis['url_firma'],
-                                                  'tipo_oficial':
-                                                      regis['tipo_oficial'],
-                                                  'placa_vehiculo':
-                                                      regis['placa_vehiculo'],
-                                                  'tipo_vehiculo':
-                                                      regis['tipo_vehiculo'],
-                                                };
+                                              print(regis);
+                                              if (regis['key_estado_plan_id'] == 22) {
+                                                for (var trip in regis['tripulacion']) {
+                                                  if (_controllercodigo.text == trip['codigo_oficial'] && trip['tipo_oficial'].toString().trim() == 'OFICIAL') {
+                                                    existe = true;
+                                                    tripulacion = {
+                                                      'dni': trip['dni'],
+                                                      'codigo_oficial': trip['codigo_oficial'],
+                                                      'nombre_oficial': trip['nombre_oficial'],
+                                                      'ruta_foto': trip['ruta_foto'],
+                                                      'url_foto': trip['url_foto'],
+                                                      'ruta_firma': trip['ruta_firma'],
+                                                      'url_firma': trip['url_firma'],
+                                                      'tipo_oficial': trip['tipo_oficial'],
+                                                      'placa_vehiculo': trip['placa_vehiculo'],
+                                                      'tipo_vehiculo': trip['tipo_vehiculo'],
+                                                    };
+                                                  }
+                                                }
                                               }
                                             }
                                           } else {
                                             for (var regis in widget.param) {
-                                              if (_controllerdni.text ==
-                                                  regis['dni'].toString().trim()) {
-                                                existe = true;
-                                                tripulacion = {
-                                                  'dni': regis['dni'],
-                                                  'codigo_oficial':
-                                                      regis['codigo_oficial'],
-                                                  'nombre_oficial':
-                                                      regis['nombre_oficial'],
-                                                  'ruta_foto':
-                                                      regis['ruta_foto'],
-                                                  'url_foto': regis['url_foto'],
-                                                  'ruta_firma':
-                                                      regis['ruta_firma'],
-                                                  'url_firma':
-                                                      regis['url_firma'],
-                                                  'tipo_oficial':
-                                                      regis['tipo_oficial'],
-                                                  'placa_vehiculo':
-                                                      regis['placa_vehiculo'],
-                                                  'tipo_vehiculo':
-                                                      regis['tipo_vehiculo'],
-                                                };
+                                              if (regis['key_estado_plan_id'] == 22) {
+                                                for (var trip in regis['tripulacion']) {
+                                                  print(trip);
+                                                  if (_controllerdni.text == trip['dni'].toString().trim() && trip['tipo_oficial'].toString().trim() == 'OFICIAL') {
+                                                    existe = true;
+                                                    tripulacion = {
+                                                      'dni': trip['dni'],
+                                                      'codigo_oficial': trip['codigo_oficial'],
+                                                      'nombre_oficial': trip['nombre_oficial'],
+                                                      'ruta_foto': trip['ruta_foto'],
+                                                      'url_foto': trip['url_foto'],
+                                                      'ruta_firma': trip['ruta_firma'],
+                                                      'url_firma': trip['url_firma'],
+                                                      'tipo_oficial': trip['tipo_oficial'],
+                                                      'placa_vehiculo': trip['placa_vehiculo'],
+                                                      'tipo_vehiculo': trip['tipo_vehiculo'],
+                                                    };
+                                                  }
+                                                }
                                               }
                                             }
                                           }
                                           if (existe) {
                                             verDetalle = true;
                                           } else {
-                                            Fluttertoast.showToast(
-                                                msg: "No Existen Datos ");
+                                            Fluttertoast.showToast(msg: "No Existen Datos ");
                                           }
                                         } else {
-                                          Fluttertoast.showToast(
-                                              msg:
-                                                  "Debe Ingresar Datos Correctos");
+                                          Fluttertoast.showToast(msg: "Debe Ingresar Datos Correctos");
                                         }
                                       });
                                     },
                                     style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Theme.of(context)
-                                                  .colorScheme
-                                                  .tertiaryContainer),
-                                      foregroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimaryFixed),
+                                      backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
+                                      foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
                                     ),
-                                    child: Text("Consultar",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
+                                    child: Text("Consultar", style: TextStyle(fontWeight: FontWeight.bold)),
                                   ),
                                   ElevatedButton(
                                     onPressed: () {
@@ -270,21 +239,12 @@ class _TripulacionState extends State<Tripulacion> {
                                       Navigator.of(context).pop();
                                     },
                                     style: ButtonStyle(
-                                      backgroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Theme.of(context)
-                                                  .colorScheme
-                                                  .tertiaryContainer),
-                                      foregroundColor:
-                                          MaterialStateProperty.all<Color>(
-                                              Theme.of(context)
-                                                  .colorScheme
-                                                  .onPrimaryFixed),
+                                      backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
+                                      foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
                                     ),
                                     child: const Text(
                                       "Salir",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold),
+                                      style: TextStyle(fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                 ],
@@ -360,23 +320,18 @@ class _TripulacionState extends State<Tripulacion> {
           child: Image.network(
             '${tripulacion['url_foto']}',
             height: MediaQuery.sizeOf(context).height * 0.2,
-            loadingBuilder: (BuildContext context, Widget child,
-                ImageChunkEvent? loadingProgress) {
+            loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
               if (loadingProgress == null) {
                 return child;
               } else {
                 return Center(
                   child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            (loadingProgress.expectedTotalBytes ?? 1)
-                        : null,
+                    value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1) : null,
                   ),
                 );
               }
             },
-            errorBuilder:
-                (BuildContext context, Object error, StackTrace? stackTrace) {
+            errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
               return Text('No se pudo cargar la imagen');
             },
           ),
@@ -402,23 +357,18 @@ class _TripulacionState extends State<Tripulacion> {
             height: MediaQuery.sizeOf(context).height * 0.15,
             width: MediaQuery.sizeOf(context).width * 0.5,
             fit: BoxFit.cover,
-            loadingBuilder: (BuildContext context, Widget child,
-                ImageChunkEvent? loadingProgress) {
+            loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
               if (loadingProgress == null) {
                 return child;
               } else {
                 return Center(
                   child: CircularProgressIndicator(
-                    value: loadingProgress.expectedTotalBytes != null
-                        ? loadingProgress.cumulativeBytesLoaded /
-                            (loadingProgress.expectedTotalBytes ?? 1)
-                        : null,
+                    value: loadingProgress.expectedTotalBytes != null ? loadingProgress.cumulativeBytesLoaded / (loadingProgress.expectedTotalBytes ?? 1) : null,
                   ),
                 );
               }
             },
-            errorBuilder:
-                (BuildContext context, Object error, StackTrace? stackTrace) {
+            errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
               return Text('No se pudo cargar la imagen');
             },
           ),
@@ -433,10 +383,8 @@ class _TripulacionState extends State<Tripulacion> {
               });
             },
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
-                  Theme.of(context).colorScheme.tertiaryContainer),
-              foregroundColor: MaterialStateProperty.all<Color>(
-                  Theme.of(context).colorScheme.onPrimaryFixed),
+              backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
+              foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
             ),
             child: Text("Salir", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
@@ -446,21 +394,21 @@ class _TripulacionState extends State<Tripulacion> {
   }
 
   void limpiar() {
-    _controllerdni.text='';
-    _controllercodigo.text='';
+    _controllerdni.text = '';
+    _controllercodigo.text = '';
     _isCodigoEnabled = true;
     _isDniEnabled = true;
     tripulacion = {
-      'dni':'',
-      'codigo_oficial':'',
-      'nombre_oficial':'',
-      'ruta_foto':'',
-      'url_foto':'',
-      'ruta_firma':'',
-      'url_firma':'',
-      'tipo_oficial':'',
-      'placa_vehiculo':'',
-      'tipo_vehiculo':'',
+      'dni': '',
+      'codigo_oficial': '',
+      'nombre_oficial': '',
+      'ruta_foto': '',
+      'url_foto': '',
+      'ruta_firma': '',
+      'url_firma': '',
+      'tipo_oficial': '',
+      'placa_vehiculo': '',
+      'tipo_vehiculo': '',
     };
   }
 }

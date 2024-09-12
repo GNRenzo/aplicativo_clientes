@@ -84,7 +84,7 @@ class _PuntoState extends State<Punto> {
               children: [
                 ElevatedButton(
                   onPressed: () {
-                    List datos = widget.param['pedidos']['tripulacion'];
+                    List datos = widget.param['pedidos'];
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => Tripulacion(param: datos),
