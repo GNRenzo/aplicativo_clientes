@@ -47,36 +47,30 @@ class _TripulacionState extends State<Pedidos> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
+  List pedidosRuta = [];
+  List pedidosProg = [];
+
+  Future<void> retornarPedidos() async {
     DateTime hoy = DateTime.now();
     hoy = DateTime(hoy.year, hoy.month, hoy.day);
-    List pedidosRuta = widget.param['pedidos'].where((pedido) {
-      try {
-        if (pedido['fecha_atencion'] == null || pedido['fecha_atencion'].isEmpty) {
-          return false;
-        }
-        DateTime fechaAtencion = DateTime.parse(pedido['fecha_atencion']);
+    var key_punto = widget.param['key_punto'];
+    var dio = Dio();
+    var response22 = await dio.request(
+      'http://armadillo-microcash.com/etarma_backend/api_mobile/apk_cliente/listar_pedidos/?pe_key_punto_asociado=$key_punto&pe_fecha_atencion=${hoy.toString().split(' ')[0]}&key_estado_plan_diario=22',
+      options: Options(method: 'GET'),
+    );
+    pedidosRuta = await (response22.data['resultSet']);
 
-        return pedido['key_estado_plan_id'] == 22 && (fechaAtencion.isAtSameMomentAs(hoy) || fechaAtencion.isAfter(hoy));
-      } catch (e) {
-        print('Error al procesar el pedido: $e');
-        return false;
-      }
-    }).toList();
-    List pedidosProg = widget.param['pedidos'].where((pedido) {
-      try {
-        if (pedido['fecha_atencion'] == null || pedido['fecha_atencion'].isEmpty) {
-          return false;
-        }
-        DateTime fechaAtencion = DateTime.parse(pedido['fecha_atencion']);
+    var response4 = await dio.request(
+      'http://armadillo-microcash.com/etarma_backend/api_mobile/apk_cliente/listar_pedidos/?pe_key_punto_asociado=$key_punto&pe_fecha_atencion=${hoy.toString().split(' ')[0]}&key_estado_plan_diario=4',
+      options: Options(method: 'GET'),
+    );
+    pedidosProg = await (response4.data['resultSet']);
+    print("Recarga");
+  }
 
-        return pedido['key_estado_plan_id'] == 4 && (fechaAtencion.isAtSameMomentAs(hoy) || fechaAtencion.isAfter(hoy));
-      } catch (e) {
-        print('Error al procesar el pedido: $e');
-        return false;
-      }
-    }).toList();
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.onPrimaryFixed,
@@ -105,87 +99,82 @@ class _TripulacionState extends State<Pedidos> {
         ),
         centerTitle: true,
       ),
-      body: Container(
-        width: MediaQuery.sizeOf(context).width,
-        padding: const EdgeInsets.all(20),
-        decoration: const BoxDecoration(color: Colors.white),
-        child: Container(
-          height: MediaQuery.sizeOf(context).height,
-          child: Column(
-            children: [
-              DatosCliente(context, widget.param),
-              _selectedService == ''
-                  ? Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        ElevatedButton(
-
-                          onPressed: () {
-                            if(pedidosRuta.length>0){
-                            setState(
-                              () {
-                                _selectedService = 'En RUTA';
+      body: RefreshIndicator(
+        onRefresh: () async {
+          setState(() {
+            retornarPedidos();
+          });
+        },
+        child: FutureBuilder<void>(
+            future: retornarPedidos(),
+            builder: (context, snapshot) {
+              return Container(
+                  width: MediaQuery.sizeOf(context).width,
+                  padding: const EdgeInsets.all(20),
+                  decoration: const BoxDecoration(color: Colors.white),
+                  child: Column(children: [
+                    DatosCliente(context, widget.param),
+                    _selectedService == ''
+                        ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                            ElevatedButton(
+                              onPressed: () {
+                                if (pedidosRuta.isNotEmpty) {
+                                  setState(() {
+                                    _selectedService = 'En RUTA';
+                                  });
+                                } else {
+                                  Fluttertoast.showToast(msg: "No existen pedidos en RUTA");
+                                }
                               },
-                            );
-                            }else{
-                              Fluttertoast.showToast(msg: "No existen pedidos en RUTA");
-                            }
-                          },
-                          style: pedidosRuta.length>0?ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
-                            foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
-                          ):null,
-                          child: const Text('En RUTA', style: TextStyle(fontWeight: FontWeight.bold)),
+                              style: pedidosRuta.isNotEmpty
+                                  ? ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
+                                      foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
+                                    )
+                                  : null,
+                              child: Text('En RUTA (${pedidosRuta.length})', style: const TextStyle(fontWeight: FontWeight.bold)),
+                            ),
+                            const SizedBox(width: 8),
+                            ElevatedButton(
+                              onPressed: () {
+                                if (pedidosProg.isNotEmpty) {
+                                  setState(() {
+                                    _selectedService = 'En PROGRAMACION';
+                                  });
+                                } else {
+                                  Fluttertoast.showToast(msg: "No existen pedidos en PROGRAMACIÓN");
+                                }
+                              },
+                              style: pedidosProg.isNotEmpty
+                                  ? ButtonStyle(
+                                      backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
+                                      foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed))
+                                  : null,
+                              child: Text('En PROGRAMACION (${pedidosProg.length})', style: const TextStyle(fontWeight: FontWeight.bold)),
+                            )
+                          ])
+                        : Container(
+                            alignment: Alignment.center,
+                            width: MediaQuery.sizeOf(context).width,
+                            padding: const EdgeInsets.all(16),
+                            color: Colors.grey[400],
+                            child: Text(
+                              _selectedService,
+                              textScaleFactor: 1,
+                              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                    if (_selectedService == 'En RUTA')
+                      Expanded(
+                        child: Container(
+                          width: MediaQuery.sizeOf(context).width,
+                          padding: const EdgeInsets.all(16),
+                          child: WidgetDatos(context, pedidosRuta, 22),
                         ),
-                        const SizedBox(width: 8),
-                        ElevatedButton(
-                          onPressed: () {
-                            if(pedidosProg.length>0){
-                            setState(() {
-                              _selectedService = 'En PROGRAMACION';
-                            });
-                            }else{
-                              Fluttertoast.showToast(msg: "No existen pedidos en PROGRAMACIÓN");
-                            }
-                          },
-                          style: pedidosProg.length>0?ButtonStyle(
-                            backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.tertiaryContainer),
-                            foregroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.onPrimaryFixed),
-                          ):null,
-                          child: const Text('En PROGRAMACION', style: TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-                      ],
-                    )
-                  : Container(
-                      alignment: Alignment.center,
-                      width: MediaQuery.sizeOf(context).width,
-                      padding: const EdgeInsets.all(16),
-                      color: Colors.grey[400],
-                      child: Text(
-                        _selectedService,
-                        textScaleFactor: 1,
-                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                       ),
-                    ),
-              if (_selectedService == 'En RUTA')
-                Expanded(
-                  child: Container(
-                    width: MediaQuery.sizeOf(context).width,
-                    padding: const EdgeInsets.all(16),
-                    child: WidgetDatos(context, widget.param['pedidos'], 22),
-                  ),
-                ),
-              if (_selectedService == 'En PROGRAMACION')
-                Expanded(
-                  child: Container(
-                    width: MediaQuery.sizeOf(context).width,
-                    padding: const EdgeInsets.all(16),
-                    child: WidgetDatos(context, widget.param['pedidos'], 4),
-                  ),
-                )
-            ],
-          ),
-        ),
+                    if (_selectedService == 'En PROGRAMACION') Expanded(child: Container(width: MediaQuery.sizeOf(context).width, padding: const EdgeInsets.all(16), child: WidgetDatos(context, pedidosProg, 4)))
+                  ]));
+            }),
       ),
     );
   }
@@ -194,41 +183,26 @@ class _TripulacionState extends State<Pedidos> {
     DateTime hoy = DateTime.now();
     hoy = DateTime(hoy.year, hoy.month, hoy.day);
 
-    var pedidosFiltrados = pedidos.where((pedido) {
-      try {
-        if (pedido['fecha_atencion'] == null || pedido['fecha_atencion'].isEmpty) {
-          return false;
-        }
-        DateTime fechaAtencion = DateTime.parse(pedido['fecha_atencion']);
-
-        return pedido['key_estado_plan_id'] == idEstado && (fechaAtencion.isAtSameMomentAs(hoy) || fechaAtencion.isAfter(hoy));
-      } catch (e) {
-        print('Error al procesar el pedido: $e');
-        return false;
-      }
-    }).toList();
-
-    return pedidosFiltrados.length > 0
+    return pedidos.length > 0
         ? ListView.builder(
-            itemCount: pedidosFiltrados.length,
+            itemCount: pedidos.length,
             itemBuilder: (context, index) {
               return Column(
                 children: [
                   Column(
                     children: [
-                      buildDataRow(context, 'FECHA', pedidosFiltrados[index]['fecha_atencion'] ?? '', false),
-                      buildDataRow(context, 'DIRECCION', pedidosFiltrados[index]['punto_direccion'] ?? '', false),
-                      buildDataRow(context, 'DISTRITO', pedidosFiltrados[index]['distrito'] ?? '', false),
-                      buildDataRow(context, 'PROVINCIA', pedidosFiltrados[index]['provincia'] ?? '', false),
-                      buildDataRow(context, 'TIPO DE FDS', pedidosFiltrados[index]["tipo_fds"], false),
-                      buildDataRow(context, 'CONTACTO 1', pedidosFiltrados[index]['punto_nombre_contacto_ope'] ?? '', false),
-                      buildDataRow(context, 'CONTACTO 2', pedidosFiltrados[index]['punto_nombre_contacto_ope2'] ?? '', false),
-                      buildDataRow(context, 'FRECUENCIA', pedidosFiltrados[index]['categoria_frecuencia'], false),
-                      buildDataRow(context, 'VALOR FRECUENCIA', pedidosFiltrados[index]['frecuencia'], false),
+                      buildDataRow(context, 'FECHA', pedidos[index]['fecha_atencion'] ?? '', false),
+                      buildDataRow(context, 'DIRECCION', pedidos[index]['punto_direccion'] ?? '', false),
+                      buildDataRow(context, 'DISTRITO', pedidos[index]['distrito'] ?? '', false),
+                      buildDataRow(context, 'PROVINCIA', pedidos[index]['provincia'] ?? '', false),
+                      buildDataRow(context, 'TIPO DE FDS', pedidos[index]["tipo_fds"], false),
+                      buildDataRow(context, 'CONTACTO 1', pedidos[index]['punto_nombre_contacto_ope'] ?? '', false),
+                      buildDataRow(context, 'CONTACTO 2', pedidos[index]['punto_nombre_contacto_ope2'] ?? '', false),
+                      buildDataRow(context, 'FRECUENCIA ${pedidos[index]['categoria_frecuencia']}', pedidos[index]['frecuencia'], false),
                     ],
                   ),
                   const Divider(),
-                  WidgetRuta(context, pedidosFiltrados[index], idEstado),
+                  WidgetRuta(context, pedidos[index], idEstado),
                   const SizedBox(height: 20),
                   editContacto == 0
                       ? Row(
@@ -236,14 +210,13 @@ class _TripulacionState extends State<Pedidos> {
                           children: [
                             ElevatedButton(
                               onPressed: () {
+                                editContacto = int.parse(pedidos[index]['key_punto'].toString()) ?? 0;
+                                idPedido = int.parse(pedidos[index]['key_plan_diario'].toString()) ?? 0;
                                 setState(() {
-                                  editContacto = int.parse(pedidosFiltrados[index]['key_punto'].toString()) ?? 0;
-                                  idPedido = int.parse(pedidosFiltrados[index]['key_plan_diario'].toString()) ?? 0;
-
-                                  nom1.text = pedidosFiltrados[index]['punto_nombre_contacto_ope'];
-                                  num1.text = pedidosFiltrados[index]['punto_telefono_contacto_ope'];
-                                  nom2.text = pedidosFiltrados[index]['punto_nombre_contacto_ope2'];
-                                  num2.text = pedidosFiltrados[index]['punto_telefono_contacto_ope2'];
+                                  nom1.text = pedidos[index]['punto_nombre_contacto_ope'];
+                                  num1.text = pedidos[index]['punto_telefono_contacto_ope'];
+                                  nom2.text = pedidos[index]['punto_nombre_contacto_ope2'];
+                                  num2.text = pedidos[index]['punto_telefono_contacto_ope2'];
                                 });
                               },
                               style: ButtonStyle(
@@ -257,8 +230,8 @@ class _TripulacionState extends State<Pedidos> {
                             ),
                             ElevatedButton(
                               onPressed: () {
-                                int idUsuario = pedidosFiltrados[index]['user_id'];
-                                int key = pedidosFiltrados[index]['key_plan_diario'];
+                                int idUsuario = widget.param['pedidos'][0]['user_id'];
+                                int key = pedidos[index]['key_plan_diario'];
                                 showDialog(
                                     context: context,
                                     builder: (BuildContext context) {
@@ -269,17 +242,17 @@ class _TripulacionState extends State<Pedidos> {
                                           TextButton(
                                             child: Text('Cancelar'),
                                             onPressed: () {
-                                              Navigator.of(context).pop(); // Cerrar el diálogo
+                                              Navigator.of(context).pop();
                                             },
                                           ),
                                           TextButton(
                                             child: Text('Confirmar'),
                                             onPressed: () {
                                               setState(() {
-                                                pedidosFiltrados[index]['key_estado_plan_id'] = -1;
+                                                pedidos[index]['key_estado_plan_id'] = -1;
                                                 _showExitConfirmationDialog(idUsuario, key);
                                               });
-                                              Navigator.of(context).pop(); // Cerrar el diálogo
+                                              Navigator.of(context).pop();
                                             },
                                           ),
                                         ],
@@ -297,10 +270,7 @@ class _TripulacionState extends State<Pedidos> {
                             ),
                           ],
                         )
-                      : SizedBox(),
-                  editContacto == 0
-                      ? SizedBox()
-                      : pedidosFiltrados[index]['key_plan_diario'] == idPedido
+                      : pedidos[index]['key_plan_diario'] == idPedido
                           ? Column(
                               children: [
                                 Padding(
@@ -359,7 +329,7 @@ class _TripulacionState extends State<Pedidos> {
                                             "telefono_contacto_ope": num1.text,
                                             "nombre_contacto_ope2": nom2.text,
                                             "telefono_contacto_ope2": num2.text,
-                                            "key_user_event": pedidosFiltrados[index]['user_id']
+                                            "key_user_event": pedidos[index]['user_id']
                                           });
                                           var dio = Dio();
                                           var response = await dio.request(
@@ -370,10 +340,11 @@ class _TripulacionState extends State<Pedidos> {
                                             ),
                                             data: data,
                                           );
-                                          pedidosFiltrados[index]['punto_nombre_contacto_ope'] = nom1.text;
-                                          pedidosFiltrados[index]['punto_telefono_contacto_ope'] = num1.text;
-                                          pedidosFiltrados[index]['punto_nombre_contacto_ope2'] = nom2.text;
-                                          pedidosFiltrados[index]['punto_telefono_contacto_ope2'] = num2.text;
+
+                                          // pedidos[index]['punto_nombre_contacto_ope'] = nom1.text;
+                                          // pedidos[index]['punto_telefono_contacto_ope'] = num1.text;
+                                          // pedidos[index]['punto_nombre_contacto_ope2'] = nom2.text;
+                                          // pedidos[index]['punto_telefono_contacto_ope2'] = num2.text;
                                           editContacto = 0;
                                           limpiar();
                                         });
