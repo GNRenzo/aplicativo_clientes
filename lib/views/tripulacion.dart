@@ -172,14 +172,14 @@ class _TripulacionState extends State<Tripulacion> {
                                   if (_controllercodigo.text != '' || _controllerdni.text != '') {
                                     if (_controllercodigo.text != '') {
                                       response = await dio.request(
-                                        'http://armadillo-microcash.com/etarma_backend/api_mobile/apk_cliente/verificar_tripulacion/?pe_key_punto_asociado=$keyPunto&pe_fecha_atencion=$fecha&pe_codigo_oficial=${_controllercodigo.text}',
+                                        '$link/api_mobile/apk_cliente/verificar_tripulacion/?pe_key_punto_asociado=$keyPunto&pe_fecha_atencion=$fecha&pe_codigo_oficial=${_controllercodigo.text}',
                                         options: Options(
                                           method: 'GET',
                                         ),
                                       );
                                     } else {
                                       response = await dio.request(
-                                        'http://armadillo-microcash.com/etarma_backend/api_mobile/apk_cliente/verificar_tripulacion/?pe_key_punto_asociado=$keyPunto&pe_fecha_atencion=$fecha&pe_dni=${_controllerdni.text}',
+                                        '$link/api_mobile/apk_cliente/verificar_tripulacion/?pe_key_punto_asociado=$keyPunto&pe_fecha_atencion=$fecha&pe_dni=${_controllerdni.text}',
                                         options: Options(
                                           method: 'GET',
                                         ),

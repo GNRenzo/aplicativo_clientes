@@ -56,13 +56,13 @@ class _TripulacionState extends State<Pedidos> {
     var key_punto = widget.param['key_punto'];
     var dio = Dio();
     var response22 = await dio.request(
-      'http://armadillo-microcash.com/etarma_backend/api_mobile/apk_cliente/listar_pedidos/?pe_key_punto_asociado=$key_punto&pe_fecha_atencion=${hoy.toString().split(' ')[0]}&key_estado_plan_diario=22',
+      '$link/api_mobile/apk_cliente/listar_pedidos/?pe_key_punto_asociado=$key_punto&pe_fecha_atencion=${hoy.toString().split(' ')[0]}&key_estado_plan_diario=22',
       options: Options(method: 'GET'),
     );
     pedidosRuta = await (response22.data['resultSet']);
 
     var response4 = await dio.request(
-      'http://armadillo-microcash.com/etarma_backend/api_mobile/apk_cliente/listar_pedidos/?pe_key_punto_asociado=$key_punto&pe_fecha_atencion=${hoy.toString().split(' ')[0]}&key_estado_plan_diario=4',
+      '$link/api_mobile/apk_cliente/listar_pedidos/?pe_key_punto_asociado=$key_punto&pe_fecha_atencion=${hoy.toString().split(' ')[0]}&key_estado_plan_diario=4',
       options: Options(method: 'GET'),
     );
     pedidosProg = await (response4.data['resultSet']);
@@ -333,7 +333,7 @@ class _TripulacionState extends State<Pedidos> {
                                           });
                                           var dio = Dio();
                                           var response = await dio.request(
-                                            'http://armadillo-microcash.com/etarma_backend/tablas/punto_asociado/modificar_contactos_apk/21',
+                                            '$link/tablas/punto_asociado/modificar_contactos_apk/21',
                                             options: Options(
                                               method: 'PATCH',
                                               headers: headers,
@@ -402,7 +402,7 @@ class _TripulacionState extends State<Pedidos> {
     var data = json.encode({"key_user_event": idUser});
     var dio = Dio();
     var response = await dio.request(
-      'http://armadillo-microcash.com/etarma_backend/solped/plan_diario/anular_cliente_apk/$key_pedido',
+      '$link/solped/plan_diario/anular_cliente_apk/$key_pedido',
       options: Options(
         method: 'PATCH',
         headers: headers,
