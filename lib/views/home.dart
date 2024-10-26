@@ -3,12 +3,13 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:microcash_cliente/views/login.dart';
 import 'package:microcash_cliente/views/punto.dart';
 
 class MyHomePage extends StatefulWidget {
-   List<dynamic> trabajador;
+  List<dynamic> trabajador;
 
   MyHomePage({super.key, required this.trabajador});
 
@@ -42,39 +43,6 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     _timer.cancel();
     super.dispose();
-  }
-
-  void _showExitConfirmationDialog(String select, int ind) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Alerta'),
-          content: Text('¿Está seguro que desea salir?'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Salir'),
-              onPressed: () {
-                setState(
-                  () {
-                    // _selectedService = select;
-                    estadoO[ind] = false;
-                  },
-                );
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Cancelar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
   }
 
   @override
@@ -113,15 +81,19 @@ class _MyHomePageState extends State<MyHomePage> {
             decoration: const BoxDecoration(color: Colors.white),
             child: RefreshIndicator(
                 onRefresh: () async {
-                  int idUser = widget.trabajador[0]['pedidos'][0]['user_id'];
-                  String fecha = "${DateTime.now().year.toString().padLeft(4, '0')}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
-                  var response2 = await dio.request('$link/tablas/punto_asociado/listarAPKUsuario/?user_id=$idUser&fecha_atencion=$fecha', options: Options(method: 'GET'));
-                  setState(() {
-                    widget.trabajador = response2.data['resultSet'];
-                  });
+                  if(widget.trabajador.length > 0){
+                    int idUser = widget.trabajador[0]['pedidos'][0]['user_id'];
+                    String fecha = "${DateTime.now().year.toString().padLeft(4, '0')}-${DateTime.now().month.toString().padLeft(2, '0')}-${DateTime.now().day.toString().padLeft(2, '0')}";
+                    var response2 = await dio.request('$link/tablas/punto_asociado/listarAPKUsuario/?user_id=$idUser&fecha_atencion=$fecha', options: Options(method: 'GET'));
+                    setState(() {
+                      widget.trabajador = response2.data['resultSet'];
+                    });
+                  }else{
+                    Fluttertoast.showToast(msg: "Sin Datos");
+                  }
                 },
                 child: Column(children: [
-                  WidgetCabecera(context, widget.trabajador[0]),
+                  widget.trabajador.length > 0 ? WidgetCabecera(context, widget.trabajador[0]) : SizedBox(),
                   Divider(),
                   Flexible(
                       child: ListView.builder(
