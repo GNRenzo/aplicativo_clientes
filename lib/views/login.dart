@@ -122,6 +122,11 @@ class _LoginPageState extends State<LoginPage> {
                                 const Expanded(child: SizedBox()),
                                 Column(
                                   children: [
+                                    link.contains('qas')?Text(
+                                      "QAS",
+                                      style: TextStyle(fontFamily: 'inter', fontWeight: FontWeight.w700, fontSize: 25, color: Theme.of(context).colorScheme.onErrorContainer),
+                                      textAlign: TextAlign.center,
+                                    ):SizedBox(),
                                     Column(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -151,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
-                                    Text("1.0.2", style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold)),
+                                    Text("1.0.3", style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold)),
                                   ],
                                 ),
                                 const SizedBox(height: 32),
@@ -185,8 +190,7 @@ class _LoginPageState extends State<LoginPage> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
-                                      Text(" Todos los derechos reservados ",
-                                          style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.w600, fontFamily: 'inter', fontSize: 10)),
+                                      Text(" Todos los derechos reservados ", style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.w600, fontFamily: 'inter', fontSize: 10)),
                                       Icon(
                                         Icons.copyright_rounded,
                                         color: Theme.of(context).colorScheme.secondary,
@@ -208,6 +212,11 @@ class _LoginPageState extends State<LoginPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Expanded(child: SizedBox()),
+                          link.contains('qas')?Text(
+                            "QAS",
+                            style: TextStyle(fontFamily: 'inter', fontWeight: FontWeight.w700, fontSize: 25, color: Theme.of(context).colorScheme.onErrorContainer),
+                            textAlign: TextAlign.center,
+                          ):SizedBox(),
                           Column(
                             children: [
                               Column(
@@ -229,7 +238,7 @@ class _LoginPageState extends State<LoginPage> {
                                   textAlign: TextAlign.center,
                                 ),
                               ),
-                              Text("1.0.2", style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold)),
+                              Text("1.0.3", style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold)),
                             ],
                           ),
                           const Expanded(child: SizedBox()),
@@ -266,8 +275,7 @@ class _LoginPageState extends State<LoginPage> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    Text(" Todos los derechos reservados ",
-                                        style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.w600, fontFamily: 'inter', fontSize: 10)),
+                                    Text(" Todos los derechos reservados ", style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.w600, fontFamily: 'inter', fontSize: 10)),
                                     Icon(
                                       Icons.copyright_rounded,
                                       color: Theme.of(context).colorScheme.secondary,
