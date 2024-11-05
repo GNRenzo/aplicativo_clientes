@@ -172,14 +172,14 @@ class _TripulacionState extends State<Tripulacion> {
                                   if (_controllercodigo.text != '' || _controllerdni.text != '') {
                                     if (_controllercodigo.text != '') {
                                       response = await dio.request(
-                                        '$link/api_mobile/apk_cliente/verificar_tripulacion/?pe_key_punto_asociado=$keyPunto&pe_fecha_atencion=$fecha&pe_codigo_oficial=${_controllercodigo.text}',
+                                        '$link/api_mobile/apk_cliente/verificar_tripulacion/?pe_key_punto_asociado=$keyPunto&pe_fecha_atencion=$fecha&pe_codigo_oficial=${_controllercodigo.text}&pe_fuente_verificacion=APK CLIENTE&pe_id_user=${widget.param[0]['user_id']}',
                                         options: Options(
                                           method: 'GET',
                                         ),
                                       );
                                     } else {
                                       response = await dio.request(
-                                        '$link/api_mobile/apk_cliente/verificar_tripulacion/?pe_key_punto_asociado=$keyPunto&pe_fecha_atencion=$fecha&pe_dni=${_controllerdni.text}',
+                                        '$link/api_mobile/apk_cliente/verificar_tripulacion/?pe_key_punto_asociado=$keyPunto&pe_fecha_atencion=$fecha&pe_dni=${_controllerdni.text}&pe_fuente_verificacion=APK CLIENTE&pe_id_user=${widget.param[0]['user_id']}',
                                         options: Options(
                                           method: 'GET',
                                         ),
@@ -248,42 +248,55 @@ class _TripulacionState extends State<Tripulacion> {
 
   Widget WidgetDatosUser(Map<String, String> tripulacion) {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Row(children: [
+        Container(
+            width: MediaQuery.sizeOf(context).width * 0.4,
+            child: Padding(
+                padding: EdgeInsets.only(left: 20),
+                child: Text('UNIDAD:',
+                    textAlign: TextAlign.start,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                    textScaleFactor: 1,
+                    style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold)))),
+        Flexible(
+            child: Text("${tripulacion['tipo_vehiculo']} - ${tripulacion['placa_vehiculo']}",
+                maxLines: 3, overflow: TextOverflow.ellipsis, textScaleFactor: 1, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)))
+      ]),
+      SizedBox(height: 5),
       Row(
         children: [
           Container(
-            width: MediaQuery.sizeOf(context).width * 0.5,
-            child: Padding(
-              padding: EdgeInsets.only(left: 20),
-              child: Text(
-                'UNIDAD:',
-                textAlign: TextAlign.start,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-                textScaleFactor: 1,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-          Flexible(
-            child: Text(
-              "${tripulacion['tipo_vehiculo']} - ${tripulacion['placa_vehiculo']}",
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-              textScaleFactor: 1,
-              style: TextStyle(
-                fontSize: 12,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-          )
+              width: MediaQuery.sizeOf(context).width * 0.4,
+              child: Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Text('DNI:',
+                      textAlign: TextAlign.start,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      textScaleFactor: 1,
+                      style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold)))),
+          Flexible(child: Text("${tripulacion['dni']}", maxLines: 3, overflow: TextOverflow.ellipsis, textScaleFactor: 1, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)))
+        ],
+      ),
+      SizedBox(height: 5),
+      Row(
+        children: [
+          Container(
+              width: MediaQuery.sizeOf(context).width * 0.4,
+              child: Padding(
+                  padding: EdgeInsets.only(left: 20),
+                  child: Text('NOMBRE:',
+                      textAlign: TextAlign.start,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      textScaleFactor: 1,
+                      style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold)))),
+          Flexible(child: Text("${tripulacion['nombre_oficial']}", maxLines: 3, overflow: TextOverflow.ellipsis, textScaleFactor: 1, style: TextStyle(fontSize: 12, color: Theme.of(context).colorScheme.primary)))
         ],
       ),
       Padding(
-        padding: EdgeInsets.only(left: 20, top: 14),
+        padding: EdgeInsets.only(left: 20, top: 5),
         child: Text(
           'COLABORADOR:',
           textAlign: TextAlign.start,
@@ -318,7 +331,7 @@ class _TripulacionState extends State<Tripulacion> {
         ),
       ),
       Padding(
-        padding: EdgeInsets.only(left: 20, top: 14),
+        padding: EdgeInsets.only(left: 20, top: 5),
         child: Text(
           'FIRMA:',
           textAlign: TextAlign.start,
