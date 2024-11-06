@@ -321,30 +321,24 @@ class _TripulacionState extends State<Pedidos> {
                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: [
                                     ElevatedButton(
-                                      onPressed: () {
-                                        setState(() async {
-                                          var headers = {'Content-Type': 'application/json'};
-                                          var data = json.encode({
-                                            "nombre_contacto_ope": nom1.text,
-                                            "telefono_contacto_ope": num1.text,
-                                            "nombre_contacto_ope2": nom2.text,
-                                            "telefono_contacto_ope2": num2.text,
-                                            "key_user_event": pedidos[index]['user_id']
-                                          });
-                                          var dio = Dio();
-                                          var response = await dio.request(
-                                            '$link/tablas/punto_asociado/modificar_contactos_apk/21',
-                                            options: Options(
-                                              method: 'PATCH',
-                                              headers: headers,
-                                            ),
-                                            data: data,
-                                          );
+                                      onPressed: () async {
 
-                                          // pedidos[index]['punto_nombre_contacto_ope'] = nom1.text;
-                                          // pedidos[index]['punto_telefono_contacto_ope'] = num1.text;
-                                          // pedidos[index]['punto_nombre_contacto_ope2'] = nom2.text;
-                                          // pedidos[index]['punto_telefono_contacto_ope2'] = num2.text;
+                                        int idUsuario = widget.param['pedidos'][0]['user_id'];
+
+                                        var headers = {'Content-Type': 'application/json'};
+                                        var data = json.encode(
+                                            {"nombre_contacto_ope": nom1.text, "telefono_contacto_ope": num1.text, "nombre_contacto_ope2": nom2.text, "telefono_contacto_ope2": num2.text, "key_user_event": idUsuario});
+                                        var dio = Dio();
+                                        var response = await dio.request(
+                                          '$link/tablas/punto_asociado/modificar_contactos_apk/${widget.param['key_punto']}',
+                                          options: Options(
+                                            method: 'PATCH',
+                                            headers: headers,
+                                          ),
+                                          data: data,
+                                        );
+
+                                        setState(() {
                                           editContacto = 0;
                                           limpiar();
                                         });
