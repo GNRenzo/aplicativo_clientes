@@ -26,10 +26,14 @@ class _TripulacionState extends State<Pedidos> {
   String _selectedService = '';
   int editContacto = 0;
   int idPedido = 0;
+  TextEditingController dni1 = TextEditingController();
   TextEditingController nom1 = TextEditingController();
   TextEditingController num1 = TextEditingController();
+  TextEditingController email1 = TextEditingController();
+  TextEditingController dni2 = TextEditingController();
   TextEditingController nom2 = TextEditingController();
   TextEditingController num2 = TextEditingController();
+  TextEditingController email2 = TextEditingController();
 
   @override
   void initState() {
@@ -66,7 +70,6 @@ class _TripulacionState extends State<Pedidos> {
       options: Options(method: 'GET'),
     );
     pedidosProg = await (response4.data['resultSet']);
-    print("Recarga");
   }
 
   @override
@@ -213,10 +216,14 @@ class _TripulacionState extends State<Pedidos> {
                                 editContacto = int.parse(pedidos[index]['key_punto'].toString()) ?? 0;
                                 idPedido = int.parse(pedidos[index]['key_plan_diario'].toString()) ?? 0;
                                 setState(() {
+                                  dni1.text = pedidos[index]['punto_dni_contacto_ope'] ?? '';
                                   nom1.text = pedidos[index]['punto_nombre_contacto_ope'];
                                   num1.text = pedidos[index]['punto_telefono_contacto_ope'];
+                                  email1.text = pedidos[index]['punto_email_contacto_ope'] ?? '';
+                                  dni2.text = pedidos[index]['punto_dni_contacto_ope2'] ?? '';
                                   nom2.text = pedidos[index]['punto_nombre_contacto_ope2'];
                                   num2.text = pedidos[index]['punto_telefono_contacto_ope2'];
+                                  email2.text = pedidos[index]['punto_email_contacto_ope2'] ?? '';
                                 });
                               },
                               style: ButtonStyle(
@@ -276,6 +283,17 @@ class _TripulacionState extends State<Pedidos> {
                                 Padding(
                                   padding: const EdgeInsets.all(3.0),
                                   child: TextFormField(
+                                    controller: dni1,
+                                    decoration: const InputDecoration(
+                                      labelText: 'DNI Contacto 1',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    textInputAction: TextInputAction.next,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: TextFormField(
                                     controller: nom1,
                                     decoration: const InputDecoration(
                                       labelText: 'Nombre Contacto 1',
@@ -290,6 +308,28 @@ class _TripulacionState extends State<Pedidos> {
                                     controller: num1,
                                     decoration: const InputDecoration(
                                       labelText: 'Teléfono Contacto 1',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    textInputAction: TextInputAction.next,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: TextFormField(
+                                    controller: email1,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Email Contacto 1',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    textInputAction: TextInputAction.next,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: TextFormField(
+                                    controller: dni2,
+                                    decoration: const InputDecoration(
+                                      labelText: 'DNI Contacto 2',
                                       border: OutlineInputBorder(),
                                     ),
                                     textInputAction: TextInputAction.next,
@@ -317,17 +357,36 @@ class _TripulacionState extends State<Pedidos> {
                                     textInputAction: TextInputAction.next,
                                   ),
                                 ),
+                                Padding(
+                                  padding: const EdgeInsets.all(3.0),
+                                  child: TextFormField(
+                                    controller: email2,
+                                    decoration: const InputDecoration(
+                                      labelText: 'Email Contacto 2',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    textInputAction: TextInputAction.next,
+                                  ),
+                                ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                                   children: [
                                     ElevatedButton(
                                       onPressed: () async {
-
                                         int idUsuario = widget.param['pedidos'][0]['user_id'];
 
                                         var headers = {'Content-Type': 'application/json'};
-                                        var data = json.encode(
-                                            {"nombre_contacto_ope": nom1.text, "telefono_contacto_ope": num1.text, "nombre_contacto_ope2": nom2.text, "telefono_contacto_ope2": num2.text, "key_user_event": idUsuario});
+                                        var data = json.encode({
+                                          "dni_contacto_ope": dni1.text,
+                                          "nombre_contacto_ope": nom1.text,
+                                          "telefono_contacto_ope": num1.text,
+                                          "email_contacto_ope": email1.text,
+                                          "dni_contacto_ope2": dni2.text,
+                                          "nombre_contacto_ope2": nom2.text,
+                                          "telefono_contacto_ope2": num2.text,
+                                          "email_contacto_ope2": email2.text,
+                                          "key_user_event": idUsuario,
+                                        });
                                         var dio = Dio();
                                         var response = await dio.request(
                                           '$link/tablas/punto_asociado/modificar_contactos_apk/${widget.param['key_punto']}',
@@ -393,12 +452,15 @@ class _TripulacionState extends State<Pedidos> {
 
   void _showExitConfirmationDialog(int idUser, int key_pedido) async {
     var headers = {'Content-Type': 'application/json'};
-    var data = json.encode({"key_user_event": idUser});
+    var data = json.encode({
+      "key_plan_diario": key_pedido,
+      "pe_user_id": idUser,
+    });
     var dio = Dio();
     var response = await dio.request(
-      '$link/solped/plan_diario/anular_cliente_apk/$key_pedido',
+      '$link/solped/plan_diario/anular_en_ruta/',
       options: Options(
-        method: 'PATCH',
+        method: 'POST',
         headers: headers,
       ),
       data: data,
@@ -406,9 +468,13 @@ class _TripulacionState extends State<Pedidos> {
   }
 
   void limpiar() {
+    dni1.text = '';
     nom1.text = '';
     num1.text = '';
+    email1.text = '';
+    dni2.text = '';
     nom2.text = '';
     num2.text = '';
+    email2.text = '';
   }
 }
